@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Доработка amoCRM</title>
+<style>html,body{margin:0;background:#fff}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;800&display=swap" rel="stylesheet">
+
+<style>
+.amo-lp{--ink:#22163B;--ink2:#5A4F70;--lilac:#D3B2FF;--lilac-soft:#F4EDFF;--green:#C7E979;--green-soft:#F2F9E1;--green-ink:#4A6610;--amber:#FFE08A;--line:#E7E1F0;--bg:#FFFFFF;
+  font-family:'Onest',Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.amo-lp *{box-sizing:border-box;margin:0;padding:0}
+.amo-lp .w{max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* hero */
+.amo-lp .hero{background:var(--lilac);padding:72px 0 56px}
+.amo-lp .hero p.k{font-size:15px;color:var(--ink2);margin-bottom:20px}
+.amo-lp .hero h1{font-size:clamp(34px,5.4vw,64px);line-height:1.04;font-weight:800;letter-spacing:-.02em;max-width:15ch}
+.amo-lp .hero .lead{font-size:clamp(18px,2vw,21px);max-width:58ch;margin-top:28px}
+.amo-lp .people{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:36px;font-size:15px}
+.amo-lp .people b{font-weight:600}
+
+/* прогресс */
+.amo-lp .prog{margin-top:40px;max-width:640px}
+.amo-lp .prog-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;font-size:15px;margin-bottom:8px}
+.amo-lp .prog-top b{font-size:28px;font-weight:800}
+.amo-lp .prog-track{height:14px;border:1.5px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden;display:flex}
+.amo-lp .prog-track i{display:block;height:100%;transition:width .4s}
+.amo-lp .prog-track .pd{background:var(--green)}
+.amo-lp .prog-track .pw{background:var(--amber)}
+.amo-lp .sync{font-size:13px;color:var(--ink2);margin-top:10px}
+.amo-lp .sync.warn{color:#8A2B12}
+
+/* панель фильтров */
+.amo-lp .bar{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+.amo-lp .bar .w{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;padding-top:12px;padding-bottom:12px}
+.amo-lp .grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.amo-lp .grp span.t{font-size:14px;color:var(--ink2);margin-right:4px}
+.amo-lp .chip{font:inherit;font-size:14px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer}
+.amo-lp .chip[aria-pressed="true"]{background:var(--ink);color:#fff}
+.amo-lp button:focus-visible,.amo-lp .toc a:focus-visible{outline:3px solid var(--green-ink);outline-offset:2px}
+
+/* раскладка */
+.amo-lp .body{display:grid;grid-template-columns:220px 1fr;gap:44px;padding-top:48px;padding-bottom:80px}
+.amo-lp .toc{position:sticky;top:120px;align-self:start;font-size:14px;line-height:1.35}
+.amo-lp .toc a{display:flex;gap:10px;color:var(--ink2);text-decoration:none;padding:5px 0}
+.amo-lp .toc a:hover{color:var(--ink)}
+.amo-lp .toc a i{font-style:normal;font-weight:600;min-width:20px;color:var(--ink)}
+.amo-lp .toc a em{font-style:normal;margin-left:auto;padding-left:8px;font-size:12.5px;white-space:nowrap}
+.amo-lp .toc a.full em{color:var(--green-ink);font-weight:600}
+
+/* разделы */
+.amo-lp section.s{padding-top:12px;margin-bottom:56px;scroll-margin-top:120px}
+.amo-lp .s-h{display:flex;align-items:baseline;gap:16px;margin-bottom:20px}
+.amo-lp .s-h .n{font-size:44px;font-weight:800;line-height:1;color:var(--lilac);-webkit-text-stroke:1.5px var(--ink)}
+.amo-lp .s-h h2{font-size:clamp(23px,2.6vw,30px);font-weight:700;line-height:1.15;letter-spacing:-.01em}
+.amo-lp .s-h p{font-size:14px;color:var(--ink2);margin-top:4px}
+.amo-lp .s-h .cnt{margin-left:auto;font-size:14px;white-space:nowrap;color:var(--ink2)}
+
+/* строка: пожелание | как решаем | статус */
+.amo-lp .row{display:grid;grid-template-columns:1fr 1.25fr 158px;border:1.5px solid var(--ink);border-radius:14px;overflow:hidden;margin-bottom:14px;transition:opacity .2s}
+.amo-lp .row.hide{display:none}
+.amo-lp .wish{background:var(--lilac-soft);padding:20px 22px}
+.amo-lp .how{background:var(--green-soft);padding:20px 22px 20px 30px;border-left:1.5px solid var(--ink);position:relative}
+.amo-lp .how:before{content:"";position:absolute;left:-11px;top:24px;width:20px;height:20px;background:var(--green);border:1.5px solid var(--ink);border-radius:50%}
+.amo-lp .lbl{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+.amo-lp .how .lbl{color:var(--green-ink)}
+.amo-lp .wish p,.amo-lp .how p{font-size:16px}
+.amo-lp .how ul{margin:8px 0 0 18px;font-size:16px}
+.amo-lp .how li{margin-bottom:3px}
+.amo-lp .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.amo-lp .tag{font-size:12.5px;font-weight:500;padding:3px 10px;border-radius:999px;background:#fff;border:1px solid var(--ink)}
+.amo-lp .tag.open{background:var(--lilac);border-color:var(--lilac)}
+
+/* колонка статуса */
+.amo-lp .st{border-left:1.5px solid var(--ink);background:#fff;padding:16px 12px;display:flex;flex-direction:column;gap:6px}
+.amo-lp .st .lbl{margin-bottom:2px}
+.amo-lp .sb{font:inherit;font-size:13.5px;text-align:left;display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:6px 9px;cursor:pointer}
+.amo-lp .sb:hover{border-color:var(--ink)}
+.amo-lp .sb i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--ink);flex:none;background:#fff}
+.amo-lp .sb[data-s="wip"] i{background:linear-gradient(90deg,var(--amber) 50%,#fff 50%)}
+.amo-lp .sb[data-s="done"] i{background:var(--green)}
+.amo-lp .sb[aria-pressed="true"]{border-color:var(--ink);font-weight:600}
+.amo-lp .sb[aria-pressed="true"][data-s="wip"]{background:var(--amber)}
+.amo-lp .sb[aria-pressed="true"][data-s="done"]{background:var(--green)}
+.amo-lp .st small{font-size:12px;color:var(--ink2);line-height:1.3;margin-top:2px;min-height:16px}
+.amo-lp .row[data-s="done"] .wish,.amo-lp .row[data-s="done"] .how{opacity:.55}
+.amo-lp .row[data-s="done"] .wish p{text-decoration:line-through;text-decoration-thickness:1px}
+.amo-lp .row[data-s="done"] .st{background:var(--green-soft)}
+
+/* комментарии */
+.amo-lp .cm{grid-column:1/-1;border-top:1.5px solid var(--ink);background:#fff;padding:10px 22px}
+.amo-lp .cm-t{font:inherit;font-size:14px;font-weight:600;background:none;border:0;color:var(--ink);cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:8px}
+.amo-lp .cm-t:before{content:"";width:8px;height:8px;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(-45deg);transition:transform .2s}
+.amo-lp .cm-t[aria-expanded="true"]:before{transform:rotate(45deg)}
+.amo-lp .cm-t span{font-weight:500;font-size:12.5px;background:var(--lilac-soft);border-radius:999px;padding:1px 8px}
+.amo-lp .cm-t span.has{background:var(--lilac)}
+.amo-lp .cm-b{padding:8px 0 10px}
+.amo-lp .cm-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.amo-lp .cm-item{border-left:3px solid var(--lilac);padding:2px 0 2px 12px}
+.amo-lp .cm-item .who{font-size:13px;color:var(--ink2)}
+.amo-lp .cm-item .who b{color:var(--ink);font-weight:600}
+.amo-lp .cm-item .tx{font-size:15.5px;white-space:pre-wrap;word-wrap:break-word}
+.amo-lp .cm-item.local{opacity:.6}
+.amo-lp .cm-empty{font-size:14px;color:var(--ink2)}
+.amo-lp .cm-form textarea,.amo-lp .cm-form input{font:inherit;font-size:15px;color:var(--ink);width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;background:#fff}
+.amo-lp .cm-form textarea{resize:vertical;min-height:64px}
+.amo-lp .cm-form textarea:focus,.amo-lp .cm-form input:focus{outline:none;border-color:var(--ink)}
+.amo-lp .cm-act{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.amo-lp .cm-act input{flex:1 1 180px;width:auto}
+.amo-lp .cm-send{font:inherit;font-size:14px;font-weight:600;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:9px 18px;cursor:pointer}
+.amo-lp .cm-send:disabled{opacity:.5;cursor:default}
+.amo-lp .cm-err{font-size:13px;color:#8A2B12;margin-top:6px;min-height:0}
+
+/* финал */
+.amo-lp .out{background:var(--ink);color:#fff;padding:64px 0}
+.amo-lp .out h2{font-size:clamp(26px,3.4vw,40px);font-weight:800;line-height:1.1;max-width:22ch}
+.amo-lp .out p{max-width:60ch;margin-top:18px;color:#E4DCF5}
+.amo-lp .out .g{display:inline-block;margin-top:28px;background:var(--green);color:var(--ink);font-weight:600;padding:12px 20px;border-radius:999px}
+
+@media (max-width:1080px){
+  .amo-lp .body{grid-template-columns:1fr;gap:0;padding-top:32px}
+  .amo-lp .toc{display:none}
+}
+@media (max-width:900px){
+  .amo-lp .row{grid-template-columns:1fr}
+  .amo-lp .how{border-left:0;border-top:1.5px solid var(--ink);padding:24px 20px 20px}
+  .amo-lp .how:before{left:20px;top:-11px}
+  .amo-lp .cm{padding:10px 16px}
+  .amo-lp .st{border-left:0;border-top:1.5px solid var(--ink);flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px 16px}
+  .amo-lp .st .lbl{width:100%}
+  .amo-lp .st small{width:100%}
+  .amo-lp .hero{padding:48px 0 40px}
+  .amo-lp .s-h .n{font-size:34px}
+}
+@media (prefers-reduced-motion:reduce){.amo-lp *{transition:none!important}}
+</style>
+
+<div class="amo-lp">
+  <header class="hero">
+    <div class="w">
+      <p class="k">Solar Staff · доработка amoCRM</p>
+      <h1>CRM, которая подсказывает, что делать дальше</h1>
+      <p class="lead">Собрали пожелания отдела продаж и разложили каждое: что хотим и как это делаем в amoCRM. Цель — чтобы CRM контролировала сроки, не давала пропускать обязательные шаги и показывала, где теряются сделки.</p>
+      <div class="people">
+        <span><b>Требования:</b> Наталья, Екатерина</span>
+        <span><b>CRM:</b> Марина</span>
+      </div>
+      <div class="prog" aria-live="polite">
+        <div class="prog-top"><span><b id="amoDone">0</b> из <span id="amoTotal">0</span> готово</span><span id="amoWip">В работе: 0</span></div>
+        <div class="prog-track"><i class="pd" id="amoBarD" style="width:0"></i><i class="pw" id="amoBarW" style="width:0"></i></div>
+        <p class="sync" id="amoSync">Загружаем отметки…</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="bar">
+    <div class="w">
+      <div class="grp" id="amoFilterS" role="toolbar" aria-label="Фильтр по статусу"><span class="t">Статус:</span></div>
+      <div class="grp" id="amoFilter" role="toolbar" aria-label="Фильтр по способу решения"><span class="t">Решение:</span></div>
+    </div>
+  </div>
+
+  <div class="w body">
+    <nav class="toc" id="amoToc" aria-label="Разделы"></nav>
+    <main id="amoMain"></main>
+  </div>
+
+  <footer class="out">
+    <div class="w">
+      <h2>Пока идут доработки — созваниваемся по статусам</h2>
+      <p>Возвращаем регулярные созвоны по CRM: что сделано, что в работе, что тестируем. Обратную связь даём сразу на тестируемом результате, а не после запуска всего пакета.</p>
+      <span class="g">Следующий шаг: техвстреча с Мариной по разделу 15</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+/* ===== НАСТРОЙКА =====
+   Вставьте сюда URL веб-приложения Google Apps Script (см. инструкцию).
+   Пока пусто — отметки сохраняются только в этом браузере. */
+var STATUS_URL="";
+var POLL_SECONDS=15;
+
+/* Теги способа решения */
+var TAGS={amo:"Настройка amo",auto:"Автоматизация",dev:"Доработка / интеграция",reg:"Регламент",open:"Обсуждаем"};
+/* Статусы */
+var ST={todo:"Не начато",wip:"В работе",done:"Готово"};
+
+/* Контент. w — пожелание, h — как решаем, t — теги.
+   Отметка привязана к id строки («номер раздела-номер строки»). Отметки и комментарии привязаны к id строки. Новые строки добавляйте в конец раздела —
+   или задайте строке свой id: {id:"8-x", w:..., h:..., t:[...]}, чтобы отметки не съехали. */
+var DATA=[
+{n:1,title:"Карточка компании",sub:"Поля, справочники, что видно сразу",rows:[
+ {w:"Провести аудит полей карточки: что оставить, объединить, переименовать, удалить, добавить.",
+  h:"Марина выгружает полный список полей amo и админки. Вместе размечаем каждое поле одним из пяти решений и фиксируем, какие поля остаются в обеих системах.",t:["amo","open"]},
+ {w:"Три поля «Сфера» объединить в одно «Сфера деятельности», добавить консалтинг, аутстаффинг и возможность вписать свою сферу.",
+  h:["Одно поле-список, значения из трёх старых полей переносим автоматически.","В справочник добавляем консалтинг, аутстаффинг и пункт «Другое» с текстовым полем.","Раз в квартал смотрим, что пишут в «Другом», и пополняем список.","Правим формы в процессах Sensei под новое поле."],t:["amo","dev"]},
+ {w:"Понять, какие источники добавить и где хранить направление базы для outbound.",
+  h:"Предлагаем отдельное поле «Направление базы» для outbound, список которого может пополнять руководитель. Финальное решение — на встрече.",t:["open"]},
+ {w:"Ключевая информация в основной части карточки, без поиска по вкладкам.",
+  h:["Выносим в первую группу полей: юрназвание, сферу, ИНН, налоговые статусы исполнителей, количество исполнителей, планируемый и фактический оборот, комиссию, источник, даты создания, первого и последнего касания, дату старта, виды работ, сегмент рынка.","В налоговые статусы добавляем «не РФ».","Проверяем юрназвание на дублирующие поля, как со сферами."],t:["amo"]},
+ {w:"Комиссия бывает разной для разных налоговых статусов — нужно несколько значений.",
+  h:"Два варианта: поле-мультисписок или отдельное поле комиссии на каждый налоговый статус. Второй удобнее для аналитики — выбираем на встрече.",t:["amo","open"]},
+ {w:"Данные об исполнителях должны быть актуальными без ручного обновления.",
+  h:"Настраиваем передачу данных из админки в карточку компании по ИНН / ID клиента, чтобы поля обновлялись автоматически.",t:["dev"]}
+]},
+{n:2,title:"Какие данные и когда заполняем",sub:"Единый стандарт по этапам воронки",rows:[
+ {w:"Для каждого этапа определить обязательные и рекомендуемые поля, задачу, SLA, условие перехода, действия при молчании клиента, когда отказ и когда предотток.",
+  h:"Собираем всё в одну таблицу этапов внутри регламента. По ней же настраиваем обязательность полей и автозадачи — одна логика в документе и в amo.",t:["reg","amo"]},
+ {w:"К «Встреча проведена» заполнены основные данные. Фактический оборот не обязателен.",
+  h:"Делаем основные поля обязательными при переходе на этап. Фактический оборот оставляем в карточке, но необязательным.",t:["amo"]},
+ {w:"После встречи — краткое саммари вместо полной расшифровки, одна расшифровка по ключевым моментам.",
+  h:["Voice AI формирует одну расшифровку по чек-листу: договорённости, обещанные материалы, сроки следующей связи.","Саммари попадает в примечание, полная запись — ссылкой.","Пересматриваем Voice AI и место на диске, чтобы его хватало всегда.","Наталья и Екатерина передают Марине список пунктов для чек-листа."],t:["dev","open"]},
+ {w:"«Согласование договора»: карточка заполнена на 100%, данные проверены.",
+  h:"Обязательные поля на входе в этап плюс автозадача «Проверить карточку» перед отправкой договора.",t:["amo","auto"]},
+ {w:"«Активация»: всё для запуска заполнено, есть следующий шаг, указана дата старта.",
+  h:"Дата старта становится обязательной — по ней считаем планы. Без открытой задачи переход на этап не проходит.",t:["amo"]}
+]},
+{n:3,title:"SLA по новым заявкам",sub:"Inbound и outbound",rows:[
+ {w:"Взять заявку в работу за 30–60 минут.",
+  h:"При создании сделки автоматически ставится задача менеджеру сроком 30 минут. Просрочка — уведомление.",t:["auto"]},
+ {w:"Первое касание за 30–60 минут, обязательно звонок. В первый день минимум 3 попытки, одна — звонок.",
+  h:"Цепочка задач: менеджер закрывает задачу с результатом — следующая ставится автоматически. Звонки фиксируются из Манго, так видно, был ли звонок.",t:["auto"]},
+ {w:"Материалы после контакта — не позже 2 часов: follow-up, презентация, информация о сервисе, договор.",
+  h:"После результата «Состоялся контакт» — задача «Отправить материалы» на 2 часа и сразу задача на обратную связь через 2 дня, если менеджер не поставил другую дату.",t:["auto"]},
+ {w:"После первого контакта зафиксировать компанию, собеседника, исполнителей, оборот, комиссию, договорённости и следующий шаг.",
+  h:"Данные — в поля карточки, договорённости и следующий шаг — в примечание по шаблону. Список совпадает со скриптом первого звонка (раздел 11).",t:["amo","reg"]},
+ {w:"Outbound: холодная база — 2 рабочих дня, выход на ЛПР — 3 касания по дню, переговоры — контроль 5 рабочих дней.",
+  h:["Холодная база: автозадача на 2 рабочих дня, после — контрольная.","Выход на ЛПР: три задачи цепочкой, одно касание — звонок. В каждой задаче — перенос или переход на следующий этап.","Переговоры: 3 дня без касаний — задача на связь; контроль перехода — 5 рабочих дней."],t:["auto"]},
+ {w:"Outbound: задача по встрече ставится рандомно, КП после встречи — день в день, согласование КП — 3 рабочих дня.",
+  h:["Задачу «Встреча» привязываем к полю «Дата встречи», а не к дате перехода.","«Встреча проведена» — задача «Отправить КП» на этот же день.","Согласование КП — автозадача на обратную связь через 3 рабочих дня, если срок не задан вручную. Дальше — как в inbound."],t:["auto"]}
+]},
+{n:4,title:"Автозадачи при бездействии",sub:"Чтобы клиент не «зависал»",rows:[
+ {w:"После первого касания — автоматически задача на следующее (мессенджер или почта) через 2 часа.",
+  h:"Триггер на закрытие задачи «Звонок»: новая задача на касание в мессенджере или почте через 2 часа, если следующий контакт не запланирован вручную.",t:["auto"]},
+ {w:"Не больше 3 дней без активности. Alert менеджеру и руководителю. Не дублировать задачу, если менеджер уже её поставил.",
+  h:["Условие: нет открытых задач и нет касаний 3 дня — создаём задачу.","Уведомление менеджеру и руководителю через Telegram-бота.","Если открытая задача уже есть — автоматика молчит."],t:["auto","dev"]},
+ {w:"Проверить все этапы с автопереходом: сделка перешла, а задача не создалась.",
+  h:"Проходим каждый этап каждой воронки и проверяем правило: на входе в этап всегда создаётся задача. Результат — чек-лист этапов с отметкой «проверено».",t:["amo"]}
+]},
+{n:5,title:"Статус «Пока не ответил»",sub:"Вместо зависших активных сделок",rows:[
+ {w:"Если клиент не отвечает после всех касаний — переводить в отдельный статус с возможностью вернуть в работу.",
+  h:["Новый статус «Пока не ответил».","Правило: 3 попытки в день заявки, затем через 2 дня и через 3 дня — после этого автоперевод.","Входящий звонок, письмо или сообщение от клиента возвращают сделку в работу автоматически; вернуть можно и вручную."],t:["amo","auto","reg"]}
+]},
+{n:6,title:"SLA после активации",sub:"Контроль пополнения баланса",rows:[
+ {w:"Сократить контроль отсутствия пополнения с 10 до 3 дней.",
+  h:["День 3 — задача менеджеру.","День 4 — повторное касание.","День 5 — напоминание.","Дальше менеджер выбирает: вернуть на рабочий этап, оставить в «Активации» с причиной или поставить задачу на поздний срок. Причина обязательна."],t:["auto","reg"]}
+]},
+{n:7,title:"Предполагаемая дата старта",sub:"Для клиентов с поздним запуском",rows:[
+ {w:"Обязательное поле «Предполагаемая дата старта работы» с напоминанием и исключением из контроля бездействия.",
+  h:["Поле обязательно с момента подписания договора.","Автозадача менеджеру перед датой старта.","До этой даты сделка не попадает в контроль «нет активности»."],t:["amo","auto"]}
+]},
+{n:8,title:"Предотток и причины отказа",sub:"Задача Натальи и Екатерины",rows:[
+ {w:"Предотток не должен быть «кладбищем» сделок.",
+  h:"Туда попадают только компании, которые попросили связаться позже чем через месяц, или интересные компании, отказавшиеся сейчас.",t:["reg"]},
+ {w:"При переводе в предотток должно быть понятно: почему не работаем, зачем возвращать и когда.",
+  h:"Три обязательных поля при переходе. Если клиент назвал срок — задача на эту дату.",t:["amo"]},
+ {w:"Компания лежит в предоттоке 2 месяца, потом — контакт.",
+  h:"Через 2 месяца автозадача на связь. Контакт успешен — сделка возвращается в работу. Нет ответа — обратно в предотток с пометкой «Свободен».",t:["auto"]},
+ {w:"Определить, кого переводить в отказ, а кого выводить из предоттока.",
+  h:"В отказ — компании на УСН, те, с кем не удалось связаться никак, и дубли. Дубли склеиваем, действующих заказчиков передаём в КС кнопкой. Вывод из предоттока — после проработки в холодных продажах.",t:["reg","open"]},
+ {w:"Почистить причины отказа.",
+  h:["Оставить: фрилансер, спам, действующий заказчик (ставится кнопкой «Передать в КС»), работают напрямую, выбор конкурента, не работают с фрилансерами, клиент видит риски, мы отказали клиенту (переформулировать), нет нужного функционала, отказ от разговора, не удалось связаться, больше не выходит на связь, некорректная база.","Убрать: меллоу, дубль, нужна крипта, нужны санционные услуги, отказ исполнителя.","Разделить «работают напрямую» и «выбор конкурента», для конкурента — поле «К кому ушли».","Проверить по данным, какие причины не используются, и спросить менеджеров, чего не хватает."],t:["amo","open"]}
+]},
+{n:9,title:"Работа со встречами",sub:"После каждой встречи",rows:[
+ {w:"После встречи: расшифровка или саммари, договорённости, следующие шаги, задача со сроком, письмо клиенту с итогами.",
+  h:"Закрепляем в регламенте и шаблоне письма «После встречи». Саммари формирует Voice AI (раздел 2).",t:["reg"]},
+ {w:"Нельзя переводить сделку дальше, если нет следующего шага и задачи.",
+  h:"Переход блокируется, пока в сделке нет открытой задачи.",t:["amo"]},
+ {w:"В inbound добавить этапы «Переговоры» и «Встреча назначена»; обратную связь перенести до «Встреча назначена» — менеджеры путаются.",
+  h:"Пересобираем этапы inbound по образцу outbound. Порядок этапов согласуем до настройки автозадач.",t:["open"]}
+]},
+{n:10,title:"Контроль заполнения",sub:"Обязательность и всплывающие формы",rows:[
+ {w:"На «Встреча проведена» и «Квалификации» — обязательные поля, без них дальше нельзя.",
+  h:"Настраиваем обязательность полей по этапам в amo.",t:["amo"]},
+ {w:"Перед «Активацией»: автопроверка, задача «Проверить заполнение карточки», запрет перехода без критичных данных.",
+  h:"Всплывающее окно с заполненными полями оставляем как есть. На этапе проверки менеджер дозаполняет пустые поля по задаче.",t:["amo","auto"]},
+ {w:"Пройтись по всем всплывающим формам во всех воронках.",
+  h:"Ревизия форм: по каждой фиксируем, какие поля в ней должны быть.",t:["amo","open"]}
+]},
+{n:11,title:"Скрипт первого звонка",sub:"Что выясняем и куда записываем",rows:[
+ {w:"Выяснить источник, имя, должность, компанию, систему налогообложения, исполнителей и их статус, виды работ, количество, оборот, следующие шаги, удобный способ связи.",
+  h:"Каждый пункт скрипта — отдельное поле в карточке, а не текст в комментарии. Источник заполняется вручную, только если не подтянулись метки.",t:["amo","reg"]},
+ {w:"Расшифровок несколько — оставить одну с релевантным чек-листом.",
+  h:"Одна расшифровка Voice AI с чек-листом по пунктам скрипта (см. раздел 2).",t:["dev"]}
+]},
+{n:12,title:"Письма и шаблоны",sub:"Inbound",rows:[
+ {w:"Персонализировать шаблоны, убрать ощущение рассылки, сократить, убрать лишние ссылки.",
+  h:["Пять сценариев: первое письмо, после встречи, follow-up, финальное касание, нет ответа.","В каждом — поля для подстановки из карточки и одна ссылка вместо нескольких."],t:["reg"]},
+ {w:"Определить, где шаблон, а где менеджер пишет сам.",
+  h:"Опрашиваем менеджеров и проводим ревизию текущих шаблонов.",t:["open"]}
+]},
+{n:13,title:"Регламент для менеджеров",sub:"Inbound и outbound, время по каждому шагу — с Мариной",rows:[
+ {w:"Что заполняем, когда, что обязательно, какие статусы, задачи и SLA.",
+  h:"Один документ на базе таблицы этапов из раздела 2, плюс правила проведения встречи.",t:["reg"]},
+ {w:"Что говорим клиенту после активации.",
+  h:"Вводим welcome-встречу: ещё раз пошагово, что будет через 3 месяца, и памятка — кому и куда писать в каких случаях.",t:["reg"]},
+ {w:"Зафиксировать, что считается нарушением процесса.",
+  h:"Сделка без задачи, бездействие дольше срока, пустые обязательные поля, нарушение SLA, переход без условий этапа, нет саммари встречи, отказ или предотток без причины, не прикреплены КП и договор, неправильная передача в КС.",t:["reg"]}
+]},
+{n:14,title:"Аналитика и точки роста",sub:"Реализуем в BI после настройки amo",rows:[
+ {w:"Видеть время до первого касания, количество касаний, сроки между этапами, потери на этапах, сделки без задачи и без активности.",
+  h:"Дашборд в BI на данных amo: время по этапам, конверсии, сделки без задачи, без активности 2+ и 4+ дня.",t:["dev"]},
+ {w:"Отдельно считать активность менеджеров.",
+  h:"Считаем только реальные действия: звонки, письма, мессенджеры, задачи, переходы между этапами. Системные записи и автоматические касания исключаем.",t:["dev"]}
+]},
+{n:15,title:"Решаем вместе с Мариной",sub:"Техническая реализуемость",rows:[
+ {w:"Пройтись по возможности реализации всего списка: обязательные поля, запреты переходов, автозадачи, SLA и уведомления, «Пока не ответил», предотток, аналитика, шаблоны.",
+  h:"Техвстреча по этому лендингу: по каждой строке ставим «делаем штатно», «нужна доработка» или «не делаем».",t:["open"]},
+ {w:"Задачи не должны ставиться на выходные и праздники.",
+  h:"Подключаем рабочий календарь: автозадачи на нерабочий день переносятся на ближайший рабочий.",t:["dev"]},
+ {w:"Согласовывать договор до регистрации клиента и присвоения ID.",
+  h:"Выносим на обсуждение с продуктом: что нужно, чтобы договор можно было согласовать без регистрации.",t:["open"]}
+]}
+];
+
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+var main=document.getElementById("amoMain"),toc=document.getElementById("amoToc");
+var state={},comments={},fTag="all",fSt="all",LS="amo-lp-status",LSC="amo-lp-comments",LSN="amo-lp-name";
+
+/* отрисовка */
+DATA.forEach(function(sec){
+  var sid="amo-s"+sec.n;
+  toc.insertAdjacentHTML("beforeend",'<a href="#'+sid+'" data-sec="'+sec.n+'"><i>'+sec.n+'</i><span>'+esc(sec.title)+'</span><em></em></a>');
+  var html='<section class="s" id="'+sid+'" data-sec="'+sec.n+'"><div class="s-h"><span class="n">'+sec.n+'</span><div><h2>'+esc(sec.title)+'</h2><p>'+esc(sec.sub)+'</p></div><span class="cnt"></span></div>';
+  sec.rows.forEach(function(r,i){
+    var id=r.id||(sec.n+"-"+(i+1));
+    var how=Array.isArray(r.h)?'<ul>'+r.h.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>':'<p>'+esc(r.h)+'</p>';
+    var tags=r.t.map(function(k){return '<span class="tag'+(k==="open"?" open":"")+'">'+TAGS[k]+'</span>'}).join("");
+    var btns=Object.keys(ST).map(function(k){return '<button type="button" class="sb" data-s="'+k+'" aria-pressed="false"><i></i>'+ST[k]+'</button>'}).join("");
+    html+='<div class="row" data-id="'+id+'" data-s="todo" data-t="'+r.t.join(" ")+'" data-title="'+esc(sec.n+". "+r.w.slice(0,90)).replace(/"/g,"&quot;")+'">'+
+      '<div class="wish"><div class="lbl">Пожелание</div><p>'+esc(r.w)+'</p></div>'+
+      '<div class="how"><div class="lbl">Как решаем</div>'+how+'<div class="tags">'+tags+'</div></div>'+
+      '<div class="st" role="group" aria-label="Статус"><div class="lbl">Статус</div>'+btns+'<small></small></div>'+
+      '<div class="cm"><button type="button" class="cm-t" aria-expanded="false">Комментарии <span>0</span></button>'+
+      '<div class="cm-b" hidden><div class="cm-list"></div><div class="cm-form">'+
+      '<textarea rows="2" maxlength="2000" placeholder="Напишите комментарий" aria-label="Комментарий"></textarea>'+
+      '<div class="cm-act"><input class="cm-name" maxlength="60" placeholder="Ваше имя" aria-label="Ваше имя"><button type="button" class="cm-send">Добавить комментарий</button></div>'+
+      '<p class="cm-err" role="status"></p></div></div></div></div>';
+  });
+  main.insertAdjacentHTML("beforeend",html+'</section>');
+});
+var rows=[].slice.call(main.querySelectorAll(".row"));
+
+function fmt(ts){
+  if(!ts)return "";var d=new Date(ts);if(isNaN(d))return "";
+  function p(n){return(n<10?"0":"")+n}
+  return "обновлено "+p(d.getDate())+"."+p(d.getMonth()+1)+" в "+p(d.getHours())+":"+p(d.getMinutes());
+}
+
+function paint(){
+  var done=0,wip=0;
+  rows.forEach(function(row){
+    var v=state[row.dataset.id]||{},s=ST[v.s]?v.s:"todo";
+    row.dataset.s=s;
+    row.querySelectorAll(".sb").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.s===s?"true":"false")});
+    row.querySelector(".st small").textContent=s==="todo"?"":fmt(v.ts);
+    if(s==="done")done++;else if(s==="wip")wip++;
+  });
+  var tot=rows.length;
+  document.getElementById("amoDone").textContent=done;
+  document.getElementById("amoTotal").textContent=tot;
+  document.getElementById("amoWip").textContent="В работе: "+wip;
+  document.getElementById("amoBarD").style.width=(done/tot*100)+"%";
+  document.getElementById("amoBarW").style.width=(wip/tot*100)+"%";
+  main.querySelectorAll("section.s").forEach(function(sec){
+    var r=sec.querySelectorAll(".row"),d=sec.querySelectorAll('.row[data-s="done"]').length,txt=d+" / "+r.length;
+    sec.querySelector(".cnt").textContent="Готово "+txt;
+    var a=toc.querySelector('a[data-sec="'+sec.dataset.sec+'"]');
+    a.querySelector("em").textContent=txt;a.classList.toggle("full",d===r.length);
+  });
+  paintComments();
+  applyFilter();
+}
+
+function short(ts){
+  var d=new Date(ts);if(isNaN(d))return "";
+  function p(n){return(n<10?"0":"")+n}
+  return p(d.getDate())+"."+p(d.getMonth()+1)+" в "+p(d.getHours())+":"+p(d.getMinutes());
+}
+function paintComments(){
+  rows.forEach(function(row){
+    var list=(comments[row.dataset.id]||[]).slice().sort(function(a,b){return new Date(a.ts)-new Date(b.ts)});
+    var c=row.querySelector(".cm-t span");c.textContent=list.length;c.classList.toggle("has",list.length>0);
+    row.querySelector(".cm-list").innerHTML=list.length?list.map(function(m){
+      return '<div class="cm-item'+(m.local?' local':'')+'"><div class="who"><b>'+esc(m.a||"Без имени")+'</b> · '+short(m.ts)+(m.local?' · сохраняем…':'')+'</div><div class="tx">'+esc(m.x)+'</div></div>';
+    }).join(""):'<p class="cm-empty">Комментариев пока нет.</p>';
+  });
+}
+
+function applyFilter(){
+  rows.forEach(function(row){
+    var okT=fTag==="all"||row.dataset.t.split(" ").indexOf(fTag)>-1;
+    var okS=fSt==="all"||(fSt==="notdone"?row.dataset.s!=="done":row.dataset.s===fSt);
+    row.classList.toggle("hide",!(okT&&okS));
+  });
+  main.querySelectorAll("section.s").forEach(function(s){s.style.display=s.querySelector(".row:not(.hide)")?"":"none"});
+}
+
+function chips(boxId,opts,setter){
+  var box=document.getElementById(boxId);
+  Object.keys(opts).forEach(function(k,i){
+    var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=opts[k];
+    b.setAttribute("aria-pressed",i===0?"true":"false");
+    b.addEventListener("click",function(){
+      box.querySelectorAll(".chip").forEach(function(c){c.setAttribute("aria-pressed","false")});
+      b.setAttribute("aria-pressed","true");setter(k);applyFilter();
+    });
+    box.appendChild(b);
+  });
+}
+chips("amoFilterS",{all:"Все",notdone:"Не готово",wip:"В работе",done:"Готово"},function(k){fSt=k});
+var tagOpts={all:"Все"};Object.keys(TAGS).forEach(function(k){tagOpts[k]=TAGS[k]});
+chips("amoFilter",tagOpts,function(k){fTag=k});
+
+/* хранение */
+var syncEl=document.getElementById("amoSync");
+function note(t,warn){syncEl.textContent=t;syncEl.classList.toggle("warn",!!warn)}
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k||LS)||"{}")}catch(e){return {}}}
+function lsSet(){try{localStorage.setItem(LS,JSON.stringify(state));localStorage.setItem(LSC,JSON.stringify(comments))}catch(e){}}
+var pending=0;
+
+function load(){
+  if(!STATUS_URL){state=lsGet();comments=lsGet(LSC);paint();note("Отметки видны только в этом браузере. Чтобы видела вся команда, подключите таблицу (STATUS_URL).",true);return}
+  if(pending)return;
+  fetch(STATUS_URL+(STATUS_URL.indexOf("?")>-1?"&":"?")+"t="+Date.now()).then(function(r){return r.json()}).then(function(d){
+    if(pending)return;
+    d=d||{};
+    if(d.status){state=d.status;comments=d.comments||{}}else{state=d}
+    lsSet();paint();
+    var n=new Date();note("Синхронизировано с командой · "+(n.getHours()<10?"0":"")+n.getHours()+":"+(n.getMinutes()<10?"0":"")+n.getMinutes());
+  }).catch(function(){state=lsGet();comments=lsGet(LSC);paint();note("Нет связи с таблицей, показаны последние сохранённые отметки.",true)});
+}
+
+function save(row,s){
+  var id=row.dataset.id,ts=new Date().toISOString();
+  state[id]={s:s,ts:ts};lsSet();paint();
+  if(!STATUS_URL)return;
+  pending++;note("Сохраняем…");
+  fetch(STATUS_URL,{method:"POST",body:JSON.stringify({id:id,s:s,title:row.dataset.title})})
+    .then(function(r){return r.json()})
+    .then(function(res){if(!res||!res.ok)throw 0;note("Сохранено")})
+    .catch(function(){note("Не удалось сохранить отметку. Отметьте ещё раз.",true)})
+    .then(function(){pending--;});
+}
+
+function sendComment(row){
+  var ta=row.querySelector(".cm-form textarea"),nm=row.querySelector(".cm-name"),err=row.querySelector(".cm-err"),btn=row.querySelector(".cm-send");
+  var x=ta.value.trim(),a=nm.value.trim();
+  if(!x){err.textContent="Напишите текст комментария.";ta.focus();return}
+  if(!a){err.textContent="Укажите имя, чтобы было понятно, кто написал.";nm.focus();return}
+  err.textContent="";
+  try{localStorage.setItem(LSN,a)}catch(e){}
+  main.querySelectorAll(".cm-name").forEach(function(i){if(!i.value)i.value=a});
+  var id=row.dataset.id,msg={a:a,x:x,ts:new Date().toISOString(),local:!!STATUS_URL};
+  (comments[id]=comments[id]||[]).push(msg);
+  ta.value="";paintComments();lsSet();
+  if(!STATUS_URL)return;
+  pending++;btn.disabled=true;note("Сохраняем комментарий…");
+  fetch(STATUS_URL,{method:"POST",body:JSON.stringify({type:"comment",id:id,a:a,x:x,title:row.dataset.title})})
+    .then(function(r){return r.json()}).then(function(res){
+      if(!res||!res.ok)throw 0;
+      delete msg.local;note("Комментарий сохранён");
+    })
+    .catch(function(){
+      comments[id].splice(comments[id].indexOf(msg),1);ta.value=x;
+      err.textContent="Не удалось сохранить комментарий. Текст вернули в поле — попробуйте ещё раз.";
+    })
+    .then(function(){pending--;btn.disabled=false;paintComments();lsSet()});
+}
+
+main.addEventListener("click",function(e){
+  var b=e.target.closest(".sb");if(b){save(b.closest(".row"),b.dataset.s);return}
+  var t=e.target.closest(".cm-t");
+  if(t){var body=t.nextElementSibling,open=t.getAttribute("aria-expanded")==="true";
+    t.setAttribute("aria-expanded",open?"false":"true");body.hidden=open;
+    if(!open)body.querySelector("textarea").focus();return}
+  var s=e.target.closest(".cm-send");if(s)sendComment(s.closest(".row"));
+});
+main.addEventListener("keydown",function(e){
+  if(e.target.matches(".cm-form textarea")&&e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();sendComment(e.target.closest(".row"))}
+});
+(function(){var n="";try{n=localStorage.getItem(LSN)||""}catch(e){}
+  if(n)main.querySelectorAll(".cm-name").forEach(function(i){i.value=n})})();
+
+load();
+if(STATUS_URL){
+  setInterval(function(){if(!document.hidden)load()},POLL_SECONDS*1000);
+  document.addEventListener("visibilitychange",function(){if(!document.hidden)load()});
+}
+})();
+</script>
+
+</body>
+</html>
