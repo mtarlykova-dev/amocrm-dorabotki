@@ -2,6 +2,7 @@
  * Хранилище отметок и комментариев для лендинга «Доработка amoCRM».
  * Лист «status»:   id | status | updated | title
  * Лист «comments»: id | author | text | created | title
+ * Лист «deadlines»: id | deadline | updated | title
  *
  * Установка:
  * 1. Создайте Google-таблицу → Расширения → Apps Script.
@@ -30,9 +31,12 @@ function sheet_(name, header) {
   /* Колонка id — строго текст. Иначе таблица превращает «1-1» в дату 1 января,
      и отметка перестаёт находиться — после обновления страница её «теряет». */
   sh.getRange('A:A').setNumberFormat('@');
+  /* На листе дедлайнов дату тоже храним текстом «ГГГГ-ММ-ДД», чтобы не сбивался часовой пояс. */
+  if (name === 'deadlines') sh.getRange('B:B').setNumberFormat('@');
   return sh;
 }
 function statusSheet_() { return sheet_('status', ['id', 'status', 'updated', 'title']); }
+function deadlineSheet_() { return sheet_('deadlines', ['id', 'deadline', 'updated', 'title']); }
 function commentSheet_() { return sheet_('comments', ['id', 'author', 'text', 'created', 'title']); }
 
 function json_(obj) {
@@ -44,6 +48,14 @@ function iso_(v) { return v instanceof Date ? v.toISOString() : String(v); }
 function safe_(v, max) {
   v = String(v || '').slice(0, max);
   return /^[=+\-@]/.test(v) ? "'" + v : v;
+}
+
+/* Обновить строку с этим id или добавить новую. */
+function upsert_(sh, id, row) {
+  var ids = sh.getRange(1, 1, sh.getLastRow(), 1).getDisplayValues().map(function (r) { return r[0]; });
+  var idx = ids.indexOf(id);
+  if (idx > -1) sh.getRange(idx + 1, 1, 1, row.length).setValues([row]);
+  else sh.appendRow(row);
 }
 
 function doGet() {
@@ -63,7 +75,15 @@ function doGet() {
     if (!id || !cv[j][2]) continue;
     (comments[id] = comments[id] || []).push({ a: String(cv[j][1]), x: String(cv[j][2]), ts: iso_(cv[j][3]) });
   }
-  return json_({ status: status, comments: comments });
+  var deadlines = {};
+  var dh = deadlineSheet_();
+  var dv = dh.getDataRange().getValues();
+  var dd = dh.getDataRange().getDisplayValues();
+  for (var k = 1; k < dd.length; k++) {
+    if (!dd[k][0] || !dd[k][1]) continue;
+    deadlines[dd[k][0]] = { d: dd[k][1], ts: iso_(dv[k][2]) };
+  }
+  return json_({ v: 3, status: status, comments: comments, deadlines: deadlines });
 }
 
 function doPost(e) {
@@ -82,14 +102,16 @@ function doPost(e) {
       return json_({ ok: true, ts: now.toISOString() });
     }
 
+    if (d.type === 'deadline') {
+      var dl = String(d.d || '');
+      if (dl && !/^\d{4}-\d{2}-\d{2}$/.test(dl)) return json_({ ok: false, error: 'bad date' });
+      upsert_(deadlineSheet_(), id, [id, dl, now, safe_(d.title, 200)]);
+      return json_({ ok: true, ts: now.toISOString() });
+    }
+
     var s = String(d.s || '');
     if (ALLOWED.indexOf(s) < 0) return json_({ ok: false, error: 'bad status' });
-    var sh = statusSheet_();
-    var ids = sh.getRange(1, 1, sh.getLastRow(), 1).getDisplayValues().map(function (r) { return r[0]; });
-    var row = [id, s, now, safe_(d.title, 200)];
-    var idx = ids.indexOf(id);
-    if (idx > -1) sh.getRange(idx + 1, 1, 1, 4).setValues([row]);
-    else sh.appendRow(row);
+    upsert_(statusSheet_(), id, [id, s, now, safe_(d.title, 200)]);
     return json_({ ok: true, ts: now.toISOString() });
   } finally {
     lock.releaseLock();

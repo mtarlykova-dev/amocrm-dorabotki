@@ -93,6 +93,17 @@
 .amo-lp .row[data-s="done"] .wish,.amo-lp .row[data-s="done"] .how{opacity:.55}
 .amo-lp .row[data-s="done"] .wish p{text-decoration:line-through;text-decoration-thickness:1px}
 .amo-lp .row[data-s="done"] .st{background:var(--green-soft)}
+.amo-lp .dl{margin-top:8px;padding-top:10px;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:4px}
+.amo-lp .dl label{font-size:13px;font-weight:600;color:var(--ink2)}
+.amo-lp .dl input{font:inherit;font-size:14px;color:var(--ink);width:100%;border:1.5px solid var(--line);border-radius:9px;padding:5px 8px;background:#fff}
+.amo-lp .dl input:focus{outline:none;border-color:var(--ink)}
+.amo-lp .dl em{font-style:normal;font-size:12px;line-height:1.3;color:var(--ink2);min-height:15px}
+.amo-lp .row[data-dl="soon"] .dl input{border-color:#E0A800;background:#FFF6D6}
+.amo-lp .row[data-dl="late"]{border-color:#B3261E}
+.amo-lp .row[data-dl="late"] .dl input{border-color:#B3261E;background:#FDECEA;color:#8A1C14;font-weight:600}
+.amo-lp .row[data-dl="late"] .dl em{color:#8A1C14;font-weight:600}
+.amo-lp .s-h .cnt b{color:#8A1C14;font-weight:600}
+.amo-lp .prog-top .late{color:#8A1C14;font-weight:600}
 
 /* комментарии */
 .amo-lp .cm{grid-column:1/-1;border-top:1.5px solid var(--ink);background:#fff;padding:10px 22px}
@@ -136,6 +147,7 @@
   .amo-lp .st{border-left:0;border-top:1.5px solid var(--ink);flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px 16px}
   .amo-lp .st .lbl{width:100%}
   .amo-lp .st small{width:100%}
+  .amo-lp .dl{width:100%}
   .amo-lp .hero{padding:48px 0 40px}
   .amo-lp .s-h .n{font-size:34px}
 }
@@ -153,7 +165,7 @@
         <span><b>CRM:</b> Марина</span>
       </div>
       <div class="prog" aria-live="polite">
-        <div class="prog-top"><span><b id="amoDone">0</b> из <span id="amoTotal">0</span> готово</span><span id="amoWip">В работе: 0</span></div>
+        <div class="prog-top"><span><b id="amoDone">0</b> из <span id="amoTotal">0</span> готово</span><span><span id="amoWip">В работе: 0</span> · <span id="amoLate">Просрочено: 0</span></span></div>
         <div class="prog-track"><i class="pd" id="amoBarD" style="width:0"></i><i class="pw" id="amoBarW" style="width:0"></i></div>
         <p class="sync" id="amoSync">Загружаем отметки…</p>
       </div>
@@ -324,7 +336,7 @@ var DATA=[
 
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
 var main=document.getElementById("amoMain"),toc=document.getElementById("amoToc");
-var state={},comments={},fTag="all",fSt="all",LS="amo-lp-status",LSC="amo-lp-comments",LSN="amo-lp-name";
+var state={},comments={},deadlines={},LSD="amo-lp-deadlines",fTag="all",fSt="all",LS="amo-lp-status",LSC="amo-lp-comments",LSN="amo-lp-name";
 
 /* отрисовка */
 DATA.forEach(function(sec){
@@ -339,7 +351,8 @@ DATA.forEach(function(sec){
     html+='<div class="row" data-id="'+id+'" data-s="todo" data-t="'+r.t.join(" ")+'" data-title="'+esc(sec.n+". "+r.w.slice(0,90)).replace(/"/g,"&quot;")+'">'+
       '<div class="wish"><div class="lbl">Пожелание</div><p>'+esc(r.w)+'</p></div>'+
       '<div class="how"><div class="lbl">Как решаем</div>'+how+'<div class="tags">'+tags+'</div></div>'+
-      '<div class="st" role="group" aria-label="Статус"><div class="lbl">Статус</div>'+btns+'<small></small></div>'+
+      '<div class="st" role="group" aria-label="Статус"><div class="lbl">Статус</div>'+btns+'<small></small>'+
+      '<div class="dl"><label for="dl-'+id+'">Дедлайн</label><input type="date" id="dl-'+id+'" class="dl-in"><em></em></div></div>'+
       '<div class="cm"><button type="button" class="cm-t" aria-expanded="false">Комментарии <span>0</span></button>'+
       '<div class="cm-b" hidden><div class="cm-list"></div><div class="cm-form">'+
       '<textarea rows="2" maxlength="2000" placeholder="Напишите комментарий" aria-label="Комментарий"></textarea>'+
@@ -356,15 +369,36 @@ function fmt(ts){
   return "обновлено "+p(d.getDate())+"."+p(d.getMonth()+1)+" в "+p(d.getHours())+":"+p(d.getMinutes());
 }
 
+/* дедлайны: d — дата «ГГГГ-ММ-ДД» */
+function today(){var n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
+function parseD(d){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d||"");return m?new Date(+m[1],m[2]-1,+m[3]):null}
+function ruD(dt){function p(n){return(n<10?"0":"")+n}return p(dt.getDate())+"."+p(dt.getMonth()+1)+"."+dt.getFullYear()}
+function dlState(id,s){
+  var v=deadlines[id]||{},dt=parseD(v.d);
+  if(!dt)return {k:"",t:""};
+  var days=Math.round((dt-today())/864e5);
+  if(s==="done")return {k:"",t:"Срок был "+ruD(dt)};
+  if(days<0)return {k:"late",t:"Просрочено на "+(-days)+" "+plural(-days)};
+  if(days===0)return {k:"soon",t:"Срок сегодня"};
+  if(days<=3)return {k:"soon",t:"Осталось "+days+" "+plural(days)};
+  return {k:"",t:"Осталось "+days+" "+plural(days)};
+}
+function plural(n){var a=n%10,b=n%100;return a===1&&b!==11?"день":(a>=2&&a<=4&&(b<12||b>14)?"дня":"дней")}
+
 function paint(){
-  var done=0,wip=0;
+  var done=0,wip=0,late=0;
   rows.forEach(function(row){
     var v=state[row.dataset.id]||{},s=ST[v.s]?v.s:"todo";
     row.dataset.s=s;
     row.querySelectorAll(".sb").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.s===s?"true":"false")});
     row.querySelector(".st small").textContent=s==="todo"?"":fmt(v.ts);
     if(s==="done")done++;else if(s==="wip")wip++;
+    var dl=dlState(row.dataset.id,s);row.dataset.dl=dl.k;if(dl.k==="late")late++;
+    var inp=row.querySelector(".dl-in");
+    if(document.activeElement!==inp)inp.value=(deadlines[row.dataset.id]||{}).d||"";
+    row.querySelector(".dl em").textContent=dl.t;
   });
+  var le=document.getElementById("amoLate");le.textContent="Просрочено: "+late;le.classList.toggle("late",late>0);
   var tot=rows.length;
   document.getElementById("amoDone").textContent=done;
   document.getElementById("amoTotal").textContent=tot;
@@ -373,7 +407,8 @@ function paint(){
   document.getElementById("amoBarW").style.width=(wip/tot*100)+"%";
   main.querySelectorAll("section.s").forEach(function(sec){
     var r=sec.querySelectorAll(".row"),d=sec.querySelectorAll('.row[data-s="done"]').length,txt=d+" / "+r.length;
-    sec.querySelector(".cnt").textContent="Готово "+txt;
+    var lt=sec.querySelectorAll('.row[data-dl="late"]').length;
+    sec.querySelector(".cnt").innerHTML="Готово "+txt+(lt?' · <b>просрочено '+lt+'</b>':"");
     var a=toc.querySelector('a[data-sec="'+sec.dataset.sec+'"]');
     a.querySelector("em").textContent=txt;a.classList.toggle("full",d===r.length);
   });
@@ -399,7 +434,7 @@ function paintComments(){
 function applyFilter(){
   rows.forEach(function(row){
     var okT=fTag==="all"||row.dataset.t.split(" ").indexOf(fTag)>-1;
-    var okS=fSt==="all"||(fSt==="notdone"?row.dataset.s!=="done":row.dataset.s===fSt);
+    var okS=fSt==="all"||(fSt==="late"?row.dataset.dl==="late":fSt==="notdone"?row.dataset.s!=="done":row.dataset.s===fSt);
     row.classList.toggle("hide",!(okT&&okS));
   });
   main.querySelectorAll("section.s").forEach(function(s){s.style.display=s.querySelector(".row:not(.hide)")?"":"none"});
@@ -417,7 +452,7 @@ function chips(boxId,opts,setter){
     box.appendChild(b);
   });
 }
-chips("amoFilterS",{all:"Все",notdone:"Не готово",wip:"В работе",done:"Готово"},function(k){fSt=k});
+chips("amoFilterS",{all:"Все",notdone:"Не готово",wip:"В работе",done:"Готово",late:"Просрочено"},function(k){fSt=k});
 var tagOpts={all:"Все"};Object.keys(TAGS).forEach(function(k){tagOpts[k]=TAGS[k]});
 chips("amoFilter",tagOpts,function(k){fTag=k});
 
@@ -425,19 +460,19 @@ chips("amoFilter",tagOpts,function(k){fTag=k});
 var syncEl=document.getElementById("amoSync");
 function note(t,warn){syncEl.textContent=t;syncEl.classList.toggle("warn",!!warn)}
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k||LS)||"{}")}catch(e){return {}}}
-function lsSet(){try{localStorage.setItem(LS,JSON.stringify(state));localStorage.setItem(LSC,JSON.stringify(comments))}catch(e){}}
+function lsSet(){try{localStorage.setItem(LS,JSON.stringify(state));localStorage.setItem(LSC,JSON.stringify(comments));localStorage.setItem(LSD,JSON.stringify(deadlines))}catch(e){}}
 var pending=0;
 
 function load(){
-  if(!STATUS_URL){state=lsGet();comments=lsGet(LSC);paint();note("Отметки видны только в этом браузере. Чтобы видела вся команда, подключите таблицу (STATUS_URL).",true);return}
+  if(!STATUS_URL){state=lsGet();comments=lsGet(LSC);deadlines=lsGet(LSD);paint();note("Отметки видны только в этом браузере. Чтобы видела вся команда, подключите таблицу (STATUS_URL).",true);return}
   if(pending)return;
   fetch(STATUS_URL+(STATUS_URL.indexOf("?")>-1?"&":"?")+"t="+Date.now()).then(function(r){return r.json()}).then(function(d){
     if(pending)return;
     d=d||{};
-    if(d.status){state=d.status;comments=d.comments||{}}else{state=d}
+    if(d.status){state=d.status;comments=d.comments||{};deadlines=d.deadlines||{}}else{state=d}
     lsSet();paint();
     var n=new Date();note("Синхронизировано с командой · "+(n.getHours()<10?"0":"")+n.getHours()+":"+(n.getMinutes()<10?"0":"")+n.getMinutes());
-  }).catch(function(){state=lsGet();comments=lsGet(LSC);paint();note("Нет связи с таблицей, показаны последние сохранённые отметки.",true)});
+  }).catch(function(){state=lsGet();comments=lsGet(LSC);deadlines=lsGet(LSD);paint();note("Нет связи с таблицей, показаны последние сохранённые отметки.",true)});
 }
 
 function save(row,s){
@@ -476,6 +511,25 @@ function sendComment(row){
     })
     .then(function(){pending--;btn.disabled=false;paintComments();lsSet()});
 }
+
+function saveDeadline(row,val){
+  var id=row.dataset.id,prev=deadlines[id];
+  if(val)deadlines[id]={d:val,ts:new Date().toISOString()};else delete deadlines[id];
+  lsSet();paint();
+  if(!STATUS_URL)return;
+  pending++;note("Сохраняем дедлайн…");
+  fetch(STATUS_URL,{method:"POST",body:JSON.stringify({type:"deadline",id:id,d:val||"",title:row.dataset.title})})
+    .then(function(r){return r.json()})
+    .then(function(res){if(!res||!res.ok)throw 0;note("Дедлайн сохранён")})
+    .catch(function(){
+      if(prev)deadlines[id]=prev;else delete deadlines[id];
+      note("Не удалось сохранить дедлайн. Выберите дату ещё раз.",true);
+    })
+    .then(function(){pending--;lsSet();paint()});
+}
+main.addEventListener("change",function(e){
+  if(e.target.matches(".dl-in"))saveDeadline(e.target.closest(".row"),e.target.value);
+});
 
 main.addEventListener("click",function(e){
   var b=e.target.closest(".sb");if(b){save(b.closest(".row"),b.dataset.s);return}
