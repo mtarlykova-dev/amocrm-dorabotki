@@ -150,6 +150,39 @@
 .amo-lp .add-cancel{font:inherit;font-size:14px;background:none;border:0;color:var(--ink2);cursor:pointer;padding:9px 6px;text-decoration:underline}
 .amo-lp .add-err{font-size:13px;color:#8A2B12}
 
+/* план по срокам */
+.amo-lp .plan{padding:44px 0 36px;border-bottom:1px solid var(--line)}
+.amo-lp .plan-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;margin-bottom:20px}
+.amo-lp .plan-h h2{font-size:clamp(24px,2.8vw,32px);font-weight:800;letter-spacing:-.01em}
+.amo-lp .plan-h p{font-size:14px;color:var(--ink2)}
+.amo-lp .cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.amo-lp .col{border:1.5px solid var(--ink);border-radius:14px;background:#fff;display:flex;flex-direction:column;min-height:120px}
+.amo-lp .col-h{padding:12px 14px 10px;border-bottom:1.5px solid var(--ink);border-radius:12px 12px 0 0;display:flex;flex-direction:column;gap:2px;min-height:62px}
+.amo-lp .col-h b{font-size:16px;font-weight:700}
+.amo-lp .col-h span{font-size:13px;color:var(--ink2)}
+.amo-lp .col[data-b="late"] .col-h{background:#FDECEA}
+.amo-lp .col[data-b="late"]{border-color:#B3261E}
+.amo-lp .col[data-b="late"] .col-h{border-color:#B3261E}
+.amo-lp .col[data-b="week"] .col-h{background:var(--amber)}
+.amo-lp .col[data-b="next"] .col-h{background:var(--lilac-soft)}
+.amo-lp .col[data-b="later"] .col-h{background:#F6F4F9}
+.amo-lp .col ul{list-style:none;margin:0;padding:6px;display:flex;flex-direction:column;gap:2px;max-height:360px;overflow:auto}
+.amo-lp .col li button{font:inherit;text-align:left;width:100%;background:none;border:0;border-radius:9px;padding:8px;cursor:pointer;color:var(--ink);display:grid;grid-template-columns:auto 1fr;gap:2px 8px}
+.amo-lp .col li button:hover{background:var(--lilac-soft)}
+.amo-lp .col li i{grid-row:1/3;width:10px;height:10px;margin-top:5px;border-radius:50%;border:1.5px solid var(--ink);background:#fff}
+.amo-lp .col li i.wip{background:var(--amber)}
+.amo-lp .col li span{font-size:14px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.amo-lp .col li small{font-size:12px;color:var(--ink2)}
+.amo-lp .col[data-b="late"] li small{color:#8A1C14;font-weight:600}
+.amo-lp .col .none{font-size:14px;color:var(--ink2);padding:12px 14px}
+.amo-lp .plan-f{margin-top:14px;font-size:14px;color:var(--ink2)}
+.amo-lp .plan-f button{font:inherit;font-size:14px;background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;cursor:pointer}
+.amo-lp .row.flash{animation:amoFlash 1.6s ease-out}
+@keyframes amoFlash{0%,40%{box-shadow:0 0 0 5px var(--green)}100%{box-shadow:0 0 0 0 transparent}}
+@media (max-width:1000px){.amo-lp .cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.amo-lp .cols{grid-template-columns:1fr}.amo-lp .col ul{max-height:none}}
+@media (prefers-reduced-motion:reduce){.amo-lp .row.flash{animation:none;outline:3px solid var(--green-ink)}}
+
 /* финал */
 .amo-lp .out{background:var(--ink);color:#fff;padding:64px 0}
 .amo-lp .out h2{font-size:clamp(26px,3.4vw,40px);font-weight:800;line-height:1.1;max-width:22ch}
@@ -192,6 +225,14 @@
       </div>
     </div>
   </header>
+
+  <section class="plan" aria-labelledby="amoPlanH">
+    <div class="w">
+      <div class="plan-h"><h2 id="amoPlanH">План по срокам</h2><p id="amoPlanSub"></p></div>
+      <div class="cols" id="amoPlan"></div>
+      <p class="plan-f" id="amoPlanF"></p>
+    </div>
+  </section>
 
   <div class="bar">
     <div class="w">
@@ -437,6 +478,48 @@ function renderTasks(){
   rows=[].slice.call(main.querySelectorAll(".row"));
 }
 
+/* План по срокам: просрочено / эта неделя / следующая / позже. Готовые задачи не показываем. */
+var BUCKETS=[["late","Просрочено"],["week","Эта неделя"],["next","Следующая неделя"],["later","Позже"]];
+var MON=["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+function dayLbl(dt){return dt.getDate()+" "+MON[dt.getMonth()]}
+function paintPlan(){
+  var t=today(),dow=(t.getDay()+6)%7,mon=new Date(t);mon.setDate(t.getDate()-dow);
+  var sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  var nmon=new Date(mon);nmon.setDate(mon.getDate()+7);var nsun=new Date(mon);nsun.setDate(mon.getDate()+13);
+  var b={late:[],week:[],next:[],later:[]},noDate=0,done=0;
+  rows.forEach(function(row){
+    if(row.dataset.s==="done"){done++;return}
+    var dt=parseD((deadlines[row.dataset.id]||{}).d);
+    if(!dt){noDate++;return}
+    var k=dt<t?"late":dt<=sun?"week":dt<=nsun?"next":"later";
+    b[k].push({row:row,dt:dt});
+  });
+  var range={late:"срок уже прошёл",week:dayLbl(mon)+" – "+dayLbl(sun),next:dayLbl(nmon)+" – "+dayLbl(nsun),later:"после "+dayLbl(nsun)};
+  document.getElementById("amoPlan").innerHTML=BUCKETS.map(function(x){
+    var k=x[0],list=b[k].sort(function(p,q){return p.dt-q.dt});
+    var items=list.length?'<ul>'+list.map(function(it){
+      var r=it.row,w=r.querySelector(".wish p").textContent,sec=r.closest("section").dataset.sec;
+      var when=k==="late"?dlState(r.dataset.id,r.dataset.s).t:dayLbl(it.dt);
+      return '<li><button type="button" data-go="'+r.dataset.id+'"><i class="'+(r.dataset.s==="wip"?"wip":"")+'"></i><span>'+esc(w)+'</span><small>Раздел '+sec+' · '+esc(when)+(r.dataset.s==="wip"?' · в работе':'')+'</small></button></li>';
+    }).join("")+'</ul>':'<p class="none">'+(k==="late"?"Просрочек нет":"Нет задач")+'</p>';
+    return '<div class="col" data-b="'+k+'"><div class="col-h"><b>'+x[1]+' · '+list.length+'</b><span>'+range[k]+'</span></div>'+items+'</div>';
+  }).join("");
+  document.getElementById("amoPlanSub").textContent="Сегодня "+dayLbl(t)+". Готовые задачи сюда не попадают.";
+  document.getElementById("amoPlanF").innerHTML=noDate?'Без дедлайна: '+noDate+' '+(noDate%10===1&&noDate%100!==11?"задача":(noDate%10>=2&&noDate%10<=4&&(noDate%100<12||noDate%100>14)?"задачи":"задач"))+'. Поставьте срок в колонке «Статус» у задачи — она появится в плане. <button type="button" id="amoNoDate">Показать задачи без срока</button>':'У всех задач в работе есть дедлайн.';
+}
+document.getElementById("amoPlan").addEventListener("click",function(e){
+  var g=e.target.closest("[data-go]");if(!g)return;
+  var row=main.querySelector('.row[data-id="'+g.dataset.go+'"]');if(!row)return;
+  if(row.classList.contains("hide")){fTag="all";fSt="all";document.querySelectorAll(".amo-lp .bar .chip").forEach(function(c,i,a){c.setAttribute("aria-pressed",c.textContent==="Все"?"true":"false")});applyFilter()}
+  row.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+  row.classList.remove("flash");void row.offsetWidth;row.classList.add("flash");
+});
+document.getElementById("amoPlanF").addEventListener("click",function(e){
+  if(e.target.id!=="amoNoDate")return;
+  fSt="nodate";document.querySelectorAll("#amoFilterS .chip").forEach(function(c){c.setAttribute("aria-pressed","false")});
+  applyFilter();document.querySelector(".amo-lp .bar").scrollIntoView({behavior:"smooth"});
+});
+
 function paint(){
   renderTasks();
   var done=0,wip=0,late=0;
@@ -466,6 +549,7 @@ function paint(){
     a.querySelector("em").textContent=txt;a.classList.toggle("full",d===r.length);
   });
   paintComments();
+  paintPlan();
   applyFilter();
 }
 
@@ -487,7 +571,7 @@ function paintComments(){
 function applyFilter(){
   rows.forEach(function(row){
     var okT=fTag==="all"||row.dataset.t.split(" ").indexOf(fTag)>-1;
-    var okS=fSt==="all"||(fSt==="late"?row.dataset.dl==="late":fSt==="notdone"?row.dataset.s!=="done":row.dataset.s===fSt);
+    var okS=fSt==="all"||(fSt==="nodate"?(row.dataset.s!=="done"&&!parseD((deadlines[row.dataset.id]||{}).d)):fSt==="late"?row.dataset.dl==="late":fSt==="notdone"?row.dataset.s!=="done":row.dataset.s===fSt);
     row.classList.toggle("hide",!(okT&&okS));
   });
   main.querySelectorAll("section.s").forEach(function(s){s.style.display=s.querySelector(".row:not(.hide)")?"":"none"});
