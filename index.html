@@ -378,8 +378,8 @@ function addHTML(n){
   var tg=Object.keys(TAGS).map(function(k){return '<label><input type="checkbox" value="'+k+'">'+TAGS[k]+'</label>'}).join("");
   return '<div class="add" data-sec="'+n+'"><button type="button" class="add-t">+ Добавить задачу в этот раздел</button>'+
     '<div class="add-f" hidden>'+
-    '<div><label for="aw-'+n+'">Пожелание</label><textarea id="aw-'+n+'" class="add-w" rows="2" maxlength="1000" placeholder="Что нужно сделать или изменить"></textarea></div>'+
-    '<div><label for="ah-'+n+'">Как решаем <span style="font-weight:400">— если уже понятно</span></label><textarea id="ah-'+n+'" class="add-h" rows="2" maxlength="2000" placeholder="Каждый пункт с новой строки"></textarea></div>'+
+    '<div><label for="aw-'+n+'">Пожелание</label><textarea id="aw-'+n+'" class="add-w" rows="2" maxlength="600" placeholder="Что нужно сделать или изменить"></textarea></div>'+
+    '<div><label for="ah-'+n+'">Как решаем <span style="font-weight:400">— если уже понятно</span></label><textarea id="ah-'+n+'" class="add-h" rows="2" maxlength="1200" placeholder="Каждый пункт с новой строки"></textarea></div>'+
     '<div><label>Способ решения</label><div class="add-tags">'+tg+'</div></div>'+
     '<div class="add-act"><input type="text" class="add-a cm-name" maxlength="60" placeholder="Ваше имя" aria-label="Ваше имя"><button type="button" class="cm-send add-send">Добавить задачу</button><button type="button" class="add-cancel">Отмена</button></div>'+
     '<p class="add-err" role="status"></p></div></div>';
@@ -514,6 +514,17 @@ var syncEl=document.getElementById("amoSync");
 function note(t,warn){syncEl.textContent=t;syncEl.classList.toggle("warn",!!warn)}
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k||LS)||"{}")}catch(e){return {}}}
 function lsSet(){try{localStorage.setItem(LS,JSON.stringify(state));localStorage.setItem(LSC,JSON.stringify(comments));localStorage.setItem(LSD,JSON.stringify(deadlines));localStorage.setItem(LST,JSON.stringify(tasks))}catch(e){}}
+/* Новые задачи хранятся как «комментарии» с особым id — так работает и со старой версией скрипта,
+   без его обновления. Удалить задачу: удалите её строку на листе «comments» (id = __tasks__). */
+var TASK_CH="__tasks__";
+function tasksFromComments(list){
+  var out=[];(list||[]).forEach(function(m){
+    try{var o=JSON.parse(m.x);if(o&&o.id&&o.w)out.push({id:String(o.id),sec:+o.sec||0,w:String(o.w),h:String(o.h||""),t:Array.isArray(o.t)?o.t:[],a:m.a,ts:m.ts})}catch(e){}
+  });return out;
+}
+function mergeTasks(){
+  var seen={},out=[];[].slice.call(arguments).forEach(function(arr){arr.forEach(function(t){if(!seen[t.id]){seen[t.id]=1;out.push(t)}})});return out;
+}
 function lsArr(){try{var v=JSON.parse(localStorage.getItem(LST)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}}
 var pending=0;
 
@@ -523,7 +534,7 @@ function load(){
   fetch(STATUS_URL+(STATUS_URL.indexOf("?")>-1?"&":"?")+"t="+Date.now()).then(function(r){return r.json()}).then(function(d){
     if(pending)return;
     d=d||{};
-    if(d.status){state=d.status;comments=d.comments||{};deadlines=d.deadlines||{};var lt=tasks.filter(function(t){return t.local});tasks=(d.tasks||[]).concat(lt)}else{state=d}
+    if(d.status){state=d.status;comments=d.comments||{};deadlines=d.deadlines||{};var lt=tasks.filter(function(t){return t.local});tasks=mergeTasks(d.tasks||[],tasksFromComments(comments[TASK_CH]),lt)}else{state=d}
     lsSet();paint();
     var n=new Date();note("Синхронизировано с командой · "+(n.getHours()<10?"0":"")+n.getHours()+":"+(n.getMinutes()<10?"0":"")+n.getMinutes());
   }).catch(function(){state=lsGet();comments=lsGet(LSC);deadlines=lsGet(LSD);tasks=lsArr();paint();note("Нет связи с таблицей, показаны последние сохранённые отметки.",true)});
@@ -598,7 +609,7 @@ function addTask(box){
   function reset(){w.value="";h.value="";box.querySelectorAll(".add-tags input").forEach(function(i){i.checked=false});box.querySelector(".add-f").hidden=true;box.querySelector(".add-t").hidden=false}
   if(!STATUS_URL){reset();paint();return}
   pending++;btn.disabled=true;note("Сохраняем задачу…");
-  fetch(STATUS_URL,{method:"POST",body:JSON.stringify({type:"task",id:t.id,sec:t.sec,w:t.w,h:t.h,t:tg.join(" "),a:av})})
+  fetch(STATUS_URL,{method:"POST",body:JSON.stringify({type:"comment",id:TASK_CH,a:av,x:JSON.stringify({id:t.id,sec:t.sec,w:t.w,h:t.h,t:tg}),title:"Новая задача в разделе "+t.sec+": "+t.w.slice(0,120)})})
     .then(function(r){return r.json()})
     .then(function(res){if(!res||!res.ok)throw 0;delete t.local;reset();note("Задача добавлена")})
     .catch(function(){tasks.splice(tasks.indexOf(t),1);err.textContent="Не удалось сохранить задачу. Текст остался в форме — попробуйте ещё раз."})
