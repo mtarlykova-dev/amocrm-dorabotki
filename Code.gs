@@ -3,6 +3,7 @@
  * Лист «status»:   id | status | updated | title
  * Лист «comments»: id | author | text | created | title
  * Лист «deadlines»: id | deadline | updated | title
+ * Лист «tasks»: id | section | wish | how | tags | author | created — задачи, добавленные с сайта
  *
  * Установка:
  * 1. Создайте Google-таблицу → Расширения → Apps Script.
@@ -20,6 +21,8 @@
  * целиком — скрипт создаст их заново с правильным форматом.
  *
  * Удалить комментарий: удалите его строку на листе «comments».
+ * Удалить добавленную задачу: удалите её строку на листе «tasks» — со страницы она пропадёт сама.
+ * Поправить текст задачи: отредактируйте ячейку «wish» или «how» на листе «tasks».
  */
 
 var ALLOWED = ['todo', 'wip', 'done'];
@@ -33,10 +36,12 @@ function sheet_(name, header) {
   sh.getRange('A:A').setNumberFormat('@');
   /* На листе дедлайнов дату тоже храним текстом «ГГГГ-ММ-ДД», чтобы не сбивался часовой пояс. */
   if (name === 'deadlines') sh.getRange('B:B').setNumberFormat('@');
+  if (name === 'tasks') sh.getRange('C:F').setNumberFormat('@');
   return sh;
 }
 function statusSheet_() { return sheet_('status', ['id', 'status', 'updated', 'title']); }
 function deadlineSheet_() { return sheet_('deadlines', ['id', 'deadline', 'updated', 'title']); }
+function taskSheet_() { return sheet_('tasks', ['id', 'section', 'wish', 'how', 'tags', 'author', 'created']); }
 function commentSheet_() { return sheet_('comments', ['id', 'author', 'text', 'created', 'title']); }
 
 function json_(obj) {
@@ -83,7 +88,18 @@ function doGet() {
     if (!dd[k][0] || !dd[k][1]) continue;
     deadlines[dd[k][0]] = { d: dd[k][1], ts: iso_(dv[k][2]) };
   }
-  return json_({ v: 3, status: status, comments: comments, deadlines: deadlines });
+  var tasks = [];
+  var th = taskSheet_();
+  var tv = th.getDataRange().getValues();
+  var td = th.getDataRange().getDisplayValues();
+  for (var m = 1; m < td.length; m++) {
+    if (!td[m][0] || !td[m][2]) continue;
+    tasks.push({
+      id: td[m][0], sec: Number(tv[m][1]) || 0, w: td[m][2], h: td[m][3],
+      t: td[m][4] ? td[m][4].split(/\s+/) : [], a: td[m][5], ts: iso_(tv[m][6])
+    });
+  }
+  return json_({ v: 4, status: status, comments: comments, deadlines: deadlines, tasks: tasks });
 }
 
 function doPost(e) {
@@ -99,6 +115,14 @@ function doPost(e) {
       var text = String(d.x || '').trim();
       if (!text) return json_({ ok: false, error: 'empty' });
       commentSheet_().appendRow([id, safe_(d.a, 60), safe_(text, 2000), now, safe_(d.title, 200)]);
+      return json_({ ok: true, ts: now.toISOString() });
+    }
+
+    if (d.type === 'task') {
+      var w = String(d.w || '').trim();
+      if (!w || !/^u-[a-z0-9]+$/.test(id)) return json_({ ok: false, error: 'bad task' });
+      var tags = String(d.t || '').split(/\s+/).filter(function (k) { return /^[a-z]{2,8}$/.test(k); }).join(' ');
+      taskSheet_().appendRow([id, Number(d.sec) || 0, safe_(w, 1000), safe_(String(d.h || '').trim(), 2000), tags, safe_(d.a, 60), now]);
       return json_({ ok: true, ts: now.toISOString() });
     }
 

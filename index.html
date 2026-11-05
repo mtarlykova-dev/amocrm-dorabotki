@@ -129,6 +129,27 @@
 .amo-lp .cm-send:disabled{opacity:.5;cursor:default}
 .amo-lp .cm-err{font-size:13px;color:#8A2B12;margin-top:6px;min-height:0}
 
+/* новые задачи */
+.amo-lp [hidden]{display:none!important}
+.amo-lp .row.user .wish{background:#FBF8FF}
+.amo-lp .by{font-size:12.5px;color:var(--ink2);margin-top:10px}
+.amo-lp .by b{font-weight:600;color:var(--ink)}
+.amo-lp .how .empty{color:var(--ink2);font-style:italic}
+.amo-lp .add{margin-top:4px}
+.amo-lp .add-t{font:inherit;font-size:15px;font-weight:600;color:var(--ink);background:#fff;border:1.5px dashed var(--ink);border-radius:14px;padding:14px 20px;width:100%;text-align:left;cursor:pointer}
+.amo-lp .add-t:hover{background:var(--lilac-soft)}
+.amo-lp .add-f{border:1.5px solid var(--ink);border-radius:14px;padding:20px 22px;background:var(--lilac-soft);display:grid;gap:12px}
+.amo-lp .add-f label{font-size:13px;font-weight:600;color:var(--ink2);display:block;margin-bottom:4px}
+.amo-lp .add-f textarea,.amo-lp .add-f input[type=text]{font:inherit;font-size:15px;color:var(--ink);width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;background:#fff;resize:vertical}
+.amo-lp .add-f textarea:focus,.amo-lp .add-f input[type=text]:focus{outline:none;border-color:var(--ink)}
+.amo-lp .add-tags{display:flex;flex-wrap:wrap;gap:6px}
+.amo-lp .add-tags label{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:500;color:var(--ink);background:#fff;border:1px solid var(--ink);border-radius:999px;padding:4px 12px;margin:0;cursor:pointer}
+.amo-lp .add-tags input{accent-color:var(--ink)}
+.amo-lp .add-act{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.amo-lp .add-act input{flex:1 1 200px;width:auto}
+.amo-lp .add-cancel{font:inherit;font-size:14px;background:none;border:0;color:var(--ink2);cursor:pointer;padding:9px 6px;text-decoration:underline}
+.amo-lp .add-err{font-size:13px;color:#8A2B12}
+
 /* финал */
 .amo-lp .out{background:var(--ink);color:#fff;padding:64px 0}
 .amo-lp .out h2{font-size:clamp(26px,3.4vw,40px);font-weight:800;line-height:1.1;max-width:22ch}
@@ -338,18 +359,12 @@ function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
 var main=document.getElementById("amoMain"),toc=document.getElementById("amoToc");
 var state={},comments={},deadlines={},LSD="amo-lp-deadlines",fTag="all",fSt="all",LS="amo-lp-status",LSC="amo-lp-comments",LSN="amo-lp-name";
 
-/* отрисовка */
-DATA.forEach(function(sec){
-  var sid="amo-s"+sec.n;
-  toc.insertAdjacentHTML("beforeend",'<a href="#'+sid+'" data-sec="'+sec.n+'"><i>'+sec.n+'</i><span>'+esc(sec.title)+'</span><em></em></a>');
-  var html='<section class="s" id="'+sid+'" data-sec="'+sec.n+'"><div class="s-h"><span class="n">'+sec.n+'</span><div><h2>'+esc(sec.title)+'</h2><p>'+esc(sec.sub)+'</p></div><span class="cnt"></span></div>';
-  sec.rows.forEach(function(r,i){
-    var id=r.id||(sec.n+"-"+(i+1));
-    var how=Array.isArray(r.h)?'<ul>'+r.h.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>':'<p>'+esc(r.h)+'</p>';
+function rowHTML(id,r,secN){
+    var how=!r.h||(Array.isArray(r.h)&&!r.h.length)?'<p class="empty">Пока не решили — обсудим.</p>':Array.isArray(r.h)?'<ul>'+r.h.map(function(x){return '<li>'+esc(x)+'</li>'}).join("")+'</ul>':'<p>'+esc(r.h)+'</p>';
     var tags=r.t.map(function(k){return '<span class="tag'+(k==="open"?" open":"")+'">'+TAGS[k]+'</span>'}).join("");
     var btns=Object.keys(ST).map(function(k){return '<button type="button" class="sb" data-s="'+k+'" aria-pressed="false"><i></i>'+ST[k]+'</button>'}).join("");
-    html+='<div class="row" data-id="'+id+'" data-s="todo" data-t="'+r.t.join(" ")+'" data-title="'+esc(sec.n+". "+r.w.slice(0,90)).replace(/"/g,"&quot;")+'">'+
-      '<div class="wish"><div class="lbl">Пожелание</div><p>'+esc(r.w)+'</p></div>'+
+    return '<div class="row'+(r.u?' user':'')+'" data-id="'+id+'" data-s="todo" data-t="'+r.t.join(" ")+'" data-title="'+esc(secN+". "+r.w.slice(0,90)).replace(/"/g,"&quot;")+'">'+
+      '<div class="wish"><div class="lbl">Пожелание</div><p>'+esc(r.w)+'</p>'+(r.u?'<p class="by">Добавил(а) <b>'+esc(r.a||"Без имени")+'</b>'+(r.ts?' · '+short(r.ts):'')+'</p>':'')+'</div>'+
       '<div class="how"><div class="lbl">Как решаем</div>'+how+'<div class="tags">'+tags+'</div></div>'+
       '<div class="st" role="group" aria-label="Статус"><div class="lbl">Статус</div>'+btns+'<small></small>'+
       '<div class="dl"><label for="dl-'+id+'">Дедлайн</label><input type="date" id="dl-'+id+'" class="dl-in"><em></em></div></div>'+
@@ -358,10 +373,30 @@ DATA.forEach(function(sec){
       '<textarea rows="2" maxlength="2000" placeholder="Напишите комментарий" aria-label="Комментарий"></textarea>'+
       '<div class="cm-act"><input class="cm-name" maxlength="60" placeholder="Ваше имя" aria-label="Ваше имя"><button type="button" class="cm-send">Добавить комментарий</button></div>'+
       '<p class="cm-err" role="status"></p></div></div></div></div>';
+}
+function addHTML(n){
+  var tg=Object.keys(TAGS).map(function(k){return '<label><input type="checkbox" value="'+k+'">'+TAGS[k]+'</label>'}).join("");
+  return '<div class="add" data-sec="'+n+'"><button type="button" class="add-t">+ Добавить задачу в этот раздел</button>'+
+    '<div class="add-f" hidden>'+
+    '<div><label for="aw-'+n+'">Пожелание</label><textarea id="aw-'+n+'" class="add-w" rows="2" maxlength="1000" placeholder="Что нужно сделать или изменить"></textarea></div>'+
+    '<div><label for="ah-'+n+'">Как решаем <span style="font-weight:400">— если уже понятно</span></label><textarea id="ah-'+n+'" class="add-h" rows="2" maxlength="2000" placeholder="Каждый пункт с новой строки"></textarea></div>'+
+    '<div><label>Способ решения</label><div class="add-tags">'+tg+'</div></div>'+
+    '<div class="add-act"><input type="text" class="add-a cm-name" maxlength="60" placeholder="Ваше имя" aria-label="Ваше имя"><button type="button" class="cm-send add-send">Добавить задачу</button><button type="button" class="add-cancel">Отмена</button></div>'+
+    '<p class="add-err" role="status"></p></div></div>';
+}
+
+/* отрисовка */
+DATA.forEach(function(sec){
+  var sid="amo-s"+sec.n;
+  toc.insertAdjacentHTML("beforeend",'<a href="#'+sid+'" data-sec="'+sec.n+'"><i>'+sec.n+'</i><span>'+esc(sec.title)+'</span><em></em></a>');
+  var html='<section class="s" id="'+sid+'" data-sec="'+sec.n+'"><div class="s-h"><span class="n">'+sec.n+'</span><div><h2>'+esc(sec.title)+'</h2><p>'+esc(sec.sub)+'</p></div><span class="cnt"></span></div>';
+  sec.rows.forEach(function(r,i){
+    html+=rowHTML(r.id||(sec.n+"-"+(i+1)),r,sec.n);
   });
+  html+=addHTML(sec.n);
   main.insertAdjacentHTML("beforeend",html+'</section>');
 });
-var rows=[].slice.call(main.querySelectorAll(".row"));
+var rows=[].slice.call(main.querySelectorAll(".row")),tasks=[],LST="amo-lp-tasks";
 
 function fmt(ts){
   if(!ts)return "";var d=new Date(ts);if(isNaN(d))return "";
@@ -385,7 +420,25 @@ function dlState(id,s){
 }
 function plural(n){var a=n%10,b=n%100;return a===1&&b!==11?"день":(a>=2&&a<=4&&(b<12||b>14)?"дня":"дней")}
 
+/* задачи, добавленные с сайта */
+function renderTasks(){
+  var ids={};tasks.forEach(function(t){ids[t.id]=1});
+  /* задачу удалили в таблице — убираем со страницы */
+  main.querySelectorAll(".row.user").forEach(function(r){if(!ids[r.dataset.id])r.remove()});
+  tasks.forEach(function(t){
+    if(main.querySelector('.row[data-id="'+t.id+'"]'))return;
+    var sec=main.querySelector('section.s[data-sec="'+t.sec+'"]')||main.querySelector('section.s:last-of-type');
+    var lines=(t.h||"").split("\n").map(function(x){return x.trim()}).filter(Boolean);
+    var r={u:1,w:t.w,h:lines.length>1?lines:(lines[0]||""),t:(t.t||[]).filter(function(k){return TAGS[k]}),a:t.a,ts:t.ts};
+    sec.querySelector(".add").insertAdjacentHTML("beforebegin",rowHTML(t.id,r,sec.dataset.sec));
+  });
+  var nm="";try{nm=localStorage.getItem(LSN)||""}catch(e){}
+  if(nm)main.querySelectorAll(".cm-name").forEach(function(i){if(!i.value)i.value=nm});
+  rows=[].slice.call(main.querySelectorAll(".row"));
+}
+
 function paint(){
+  renderTasks();
   var done=0,wip=0,late=0;
   rows.forEach(function(row){
     var v=state[row.dataset.id]||{},s=ST[v.s]?v.s:"todo";
@@ -460,19 +513,20 @@ chips("amoFilter",tagOpts,function(k){fTag=k});
 var syncEl=document.getElementById("amoSync");
 function note(t,warn){syncEl.textContent=t;syncEl.classList.toggle("warn",!!warn)}
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k||LS)||"{}")}catch(e){return {}}}
-function lsSet(){try{localStorage.setItem(LS,JSON.stringify(state));localStorage.setItem(LSC,JSON.stringify(comments));localStorage.setItem(LSD,JSON.stringify(deadlines))}catch(e){}}
+function lsSet(){try{localStorage.setItem(LS,JSON.stringify(state));localStorage.setItem(LSC,JSON.stringify(comments));localStorage.setItem(LSD,JSON.stringify(deadlines));localStorage.setItem(LST,JSON.stringify(tasks))}catch(e){}}
+function lsArr(){try{var v=JSON.parse(localStorage.getItem(LST)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}}
 var pending=0;
 
 function load(){
-  if(!STATUS_URL){state=lsGet();comments=lsGet(LSC);deadlines=lsGet(LSD);paint();note("Отметки видны только в этом браузере. Чтобы видела вся команда, подключите таблицу (STATUS_URL).",true);return}
+  if(!STATUS_URL){state=lsGet();comments=lsGet(LSC);deadlines=lsGet(LSD);tasks=lsArr();paint();note("Отметки видны только в этом браузере. Чтобы видела вся команда, подключите таблицу (STATUS_URL).",true);return}
   if(pending)return;
   fetch(STATUS_URL+(STATUS_URL.indexOf("?")>-1?"&":"?")+"t="+Date.now()).then(function(r){return r.json()}).then(function(d){
     if(pending)return;
     d=d||{};
-    if(d.status){state=d.status;comments=d.comments||{};deadlines=d.deadlines||{}}else{state=d}
+    if(d.status){state=d.status;comments=d.comments||{};deadlines=d.deadlines||{};var lt=tasks.filter(function(t){return t.local});tasks=(d.tasks||[]).concat(lt)}else{state=d}
     lsSet();paint();
     var n=new Date();note("Синхронизировано с командой · "+(n.getHours()<10?"0":"")+n.getHours()+":"+(n.getMinutes()<10?"0":"")+n.getMinutes());
-  }).catch(function(){state=lsGet();comments=lsGet(LSC);deadlines=lsGet(LSD);paint();note("Нет связи с таблицей, показаны последние сохранённые отметки.",true)});
+  }).catch(function(){state=lsGet();comments=lsGet(LSC);deadlines=lsGet(LSD);tasks=lsArr();paint();note("Нет связи с таблицей, показаны последние сохранённые отметки.",true)});
 }
 
 function save(row,s){
@@ -531,7 +585,32 @@ main.addEventListener("change",function(e){
   if(e.target.matches(".dl-in"))saveDeadline(e.target.closest(".row"),e.target.value);
 });
 
+function addTask(box){
+  var w=box.querySelector(".add-w"),h=box.querySelector(".add-h"),a=box.querySelector(".add-a"),err=box.querySelector(".add-err"),btn=box.querySelector(".add-send");
+  var wv=w.value.trim(),av=a.value.trim();
+  if(!wv){err.textContent="Опишите пожелание.";w.focus();return}
+  if(!av){err.textContent="Укажите имя, чтобы было понятно, кто добавил.";a.focus();return}
+  err.textContent="";
+  try{localStorage.setItem(LSN,av)}catch(e){}
+  var tg=[].slice.call(box.querySelectorAll(".add-tags input:checked")).map(function(i){return i.value});
+  var t={id:"u-"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),sec:+box.dataset.sec,w:wv,h:h.value.trim(),t:tg,a:av,ts:new Date().toISOString(),local:!!STATUS_URL};
+  tasks.push(t);lsSet();
+  function reset(){w.value="";h.value="";box.querySelectorAll(".add-tags input").forEach(function(i){i.checked=false});box.querySelector(".add-f").hidden=true;box.querySelector(".add-t").hidden=false}
+  if(!STATUS_URL){reset();paint();return}
+  pending++;btn.disabled=true;note("Сохраняем задачу…");
+  fetch(STATUS_URL,{method:"POST",body:JSON.stringify({type:"task",id:t.id,sec:t.sec,w:t.w,h:t.h,t:tg.join(" "),a:av})})
+    .then(function(r){return r.json()})
+    .then(function(res){if(!res||!res.ok)throw 0;delete t.local;reset();note("Задача добавлена")})
+    .catch(function(){tasks.splice(tasks.indexOf(t),1);err.textContent="Не удалось сохранить задачу. Текст остался в форме — попробуйте ещё раз."})
+    .then(function(){pending--;btn.disabled=false;lsSet();paint()});
+}
+
 main.addEventListener("click",function(e){
+  var at=e.target.closest(".add-t");
+  if(at){at.hidden=true;var f=at.nextElementSibling;f.hidden=false;f.querySelector(".add-w").focus();return}
+  var ac=e.target.closest(".add-cancel");
+  if(ac){var bx=ac.closest(".add");bx.querySelector(".add-f").hidden=true;bx.querySelector(".add-t").hidden=false;return}
+  var as=e.target.closest(".add-send");if(as){addTask(as.closest(".add"));return}
   var b=e.target.closest(".sb");if(b){save(b.closest(".row"),b.dataset.s);return}
   var t=e.target.closest(".cm-t");
   if(t){var body=t.nextElementSibling,open=t.getAttribute("aria-expanded")==="true";
