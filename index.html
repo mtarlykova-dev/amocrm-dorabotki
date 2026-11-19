@@ -177,7 +177,7 @@
 .amo-lp .col .none{font-size:14px;color:var(--ink2);padding:12px 14px}
 .amo-lp .plan-f{margin-top:14px;font-size:14px;color:var(--ink2)}
 .amo-lp .plan-f button{font:inherit;font-size:14px;background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;cursor:pointer}
-.amo-lp .row.flash{animation:amoFlash 1.6s ease-out}
+.amo-lp .row.flash,.amo-lp .kt.flash{animation:amoFlash 1.6s ease-out}
 @keyframes amoFlash{0%,40%{box-shadow:0 0 0 5px var(--green)}100%{box-shadow:0 0 0 0 transparent}}
 @media (max-width:1000px){.amo-lp .cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){.amo-lp .cols{grid-template-columns:1fr}.amo-lp .col ul{max-height:none}}
@@ -206,9 +206,131 @@
   .amo-lp .s-h .n{font-size:34px}
 }
 @media (prefers-reduced-motion:reduce){.amo-lp *{transition:none!important}}
+
+/* ===== вкладки ===== */
+.amo-lp .tabs{background:var(--ink);position:relative;z-index:6}
+.amo-lp .tabs .w{display:flex;gap:4px;padding-top:10px;overflow-x:auto}
+.amo-lp .tab{font:inherit;font-size:15px;font-weight:600;color:#E4DCF5;background:transparent;border:0;border-radius:12px 12px 0 0;padding:12px 20px 13px;cursor:pointer;white-space:nowrap}
+.amo-lp .tab:hover{color:#fff}
+.amo-lp .tab[aria-selected="true"]{background:var(--lilac);color:var(--ink)}
+.amo-lp .tab:focus-visible{outline:3px solid var(--green);outline-offset:-3px}
+.amo-lp .tab small{font-weight:500;font-size:12.5px;margin-left:6px;opacity:.8}
+
+/* ===== план работ ===== */
+.amo-lp .k-hero{background:var(--lilac);padding:48px 0 40px}
+.amo-lp .k-hero .k{font-size:15px;color:var(--ink2);margin-bottom:14px}
+.amo-lp .k-hero h1{font-size:clamp(32px,4.6vw,56px);line-height:1.04;font-weight:800;letter-spacing:-.02em;max-width:18ch}
+.amo-lp .k-hero .lead{font-size:clamp(17px,1.8vw,19px);max-width:62ch;margin-top:18px}
+.amo-lp .blocks{display:flex;flex-wrap:wrap;gap:6px;margin-top:24px;align-items:center}
+.amo-lp .blocks span.t{font-size:14px;color:var(--ink2);margin-right:4px}
+.amo-lp .blk{font-size:13.5px;border-radius:999px;padding:5px 12px;border:1.5px solid var(--ink);background:#fff}
+.amo-lp .blk.on{background:var(--ink);color:#fff;font-weight:600}
+.amo-lp .blk.next{border-style:dashed;background:transparent;color:var(--ink2);border-color:var(--ink2)}
+.amo-lp .k-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:28px}
+.amo-lp .k-card{background:#fff;border:1.5px solid var(--ink);border-radius:14px;padding:14px 16px}
+.amo-lp .k-card b{display:block;font-size:26px;font-weight:800;line-height:1.1}
+.amo-lp .k-card span{font-size:13.5px;color:var(--ink2)}
+.amo-lp .k-card.warn{border-color:#B3261E;background:#FDECEA}
+.amo-lp .k-card.warn b{color:#8A1C14}
+.amo-lp .k-bar{height:10px;border:1.5px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden;margin-top:8px;display:flex}
+.amo-lp .k-bar i{display:block;height:100%;background:var(--green);transition:width .4s}
+
+.amo-lp .k-tools{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+.amo-lp .k-tools .w{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;padding-top:12px;padding-bottom:12px}
+.amo-lp .k-body{padding:36px 24px 72px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:36px;align-items:start}
+.amo-lp .k-side{position:sticky;top:76px;display:flex;flex-direction:column;gap:14px}
+.amo-lp .k-box{border:1.5px solid var(--ink);border-radius:14px;padding:14px 16px;background:#fff}
+.amo-lp .k-box h3{font-size:15px;font-weight:700;margin-bottom:8px}
+.amo-lp .k-box ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.amo-lp .k-box li{font-size:14px;line-height:1.35}
+.amo-lp .k-box li button{font:inherit;text-align:left;background:none;border:0;padding:0;color:var(--ink);cursor:pointer;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.amo-lp .k-box li small{display:block;font-size:12.5px;color:var(--ink2)}
+.amo-lp .k-box p{font-size:14px;color:var(--ink2)}
+.amo-lp .k-box.rules li{padding-left:14px;position:relative}
+.amo-lp .k-box.rules li:before{content:"";position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--ink)}
+
+.amo-lp .k-grp{margin-bottom:34px}
+.amo-lp .k-grp>h2{font-size:clamp(20px,2.2vw,24px);font-weight:700;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.amo-lp .k-grp>h2 .pr{font-size:13px;font-weight:600;border-radius:999px;padding:3px 10px;border:1.5px solid var(--ink)}
+.amo-lp .k-grp>p{font-size:14px;color:var(--ink2);margin-bottom:14px}
+.amo-lp .pr1{background:#FFD3CC}.amo-lp .pr2{background:var(--amber)}.amo-lp .pr3{background:var(--lilac-soft)}.amo-lp .pr4{background:#F1EFF4}
+
+.amo-lp .kt{border:1.5px solid var(--ink);border-radius:14px;margin-bottom:10px;background:#fff;overflow:hidden}
+.amo-lp .kt.hide{display:none}
+.amo-lp .kt-row{display:grid;grid-template-columns:28px minmax(0,1fr) 128px 136px 64px 28px;gap:12px;align-items:center;padding:12px 14px}
+.amo-lp .kt-st{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--ink);background:#fff;cursor:pointer;padding:0;position:relative}
+.amo-lp .kt[data-s="wip"] .kt-st{background:linear-gradient(90deg,var(--amber) 50%,#fff 50%)}
+.amo-lp .kt[data-s="done"] .kt-st{background:var(--green)}
+.amo-lp .kt[data-s="done"] .kt-st:after{content:"";position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid var(--ink);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.amo-lp .kt-t{min-width:0;cursor:pointer}
+.amo-lp .kt-t b{display:block;font-size:16px;font-weight:600;line-height:1.3}
+.amo-lp .kt-t small{display:block;font-size:13px;color:var(--ink2);margin-top:2px}
+.amo-lp .kt-t small .wait{color:#7A4E00;font-weight:600}
+.amo-lp .kt[data-s="done"] .kt-t b{text-decoration:line-through;text-decoration-thickness:1px;color:var(--ink2)}
+.amo-lp .kt select,.amo-lp .kt input[type=date],.amo-lp .k-add select,.amo-lp .k-add input{font:inherit;font-size:14px;color:var(--ink);width:100%;border:1.5px solid var(--line);border-radius:9px;padding:5px 7px;background:#fff}
+.amo-lp .kt select:focus,.amo-lp .kt input:focus,.amo-lp .k-add select:focus,.amo-lp .k-add input:focus,.amo-lp .k-add textarea:focus{outline:none;border-color:var(--ink)}
+.amo-lp .kt[data-dl="soon"] .kt-due input{border-color:#E0A800;background:#FFF6D6}
+.amo-lp .kt[data-dl="late"]{border-color:#B3261E}
+.amo-lp .kt[data-dl="late"] .kt-due input{border-color:#B3261E;background:#FDECEA;color:#8A1C14;font-weight:600}
+.amo-lp .kt-due em{display:block;font-style:normal;font-size:11.5px;color:var(--ink2);margin-top:2px;min-height:14px}
+.amo-lp .kt[data-dl="late"] .kt-due em{color:#8A1C14;font-weight:600}
+.amo-lp .kt-p{font-size:13px;font-weight:600;text-align:center;border-radius:999px;padding:3px 0;background:var(--lilac-soft)}
+.amo-lp .kt-p.full{background:var(--green)}
+.amo-lp .kt-x{width:28px;height:28px;border:0;background:none;cursor:pointer;border-radius:8px;display:grid;place-items:center}
+.amo-lp .kt-x:hover{background:var(--lilac-soft)}
+.amo-lp .kt-x:before{content:"";width:8px;height:8px;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(45deg);margin-top:-4px;transition:transform .2s}
+.amo-lp .kt.open .kt-x:before{transform:rotate(-135deg);margin-top:4px}
+.amo-lp .kt-d{border-top:1.5px solid var(--ink);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:0}
+.amo-lp .kt-d>div{padding:16px 18px}
+.amo-lp .kt-d>div+div{border-left:1.5px solid var(--line)}
+.amo-lp .kt-d h4{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:8px}
+.amo-lp .subs{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.amo-lp .subs label{display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:15px;line-height:1.4;cursor:pointer;align-items:start}
+.amo-lp .subs input{width:18px;height:18px;margin-top:2px;accent-color:var(--green-ink)}
+.amo-lp .subs .done span{text-decoration:line-through;color:var(--ink2)}
+.amo-lp .subs small{color:var(--ink2);font-size:12.5px}
+.amo-lp .sub-add{display:flex;gap:6px}
+.amo-lp .sub-add input{flex:1;font:inherit;font-size:14px;border:1.5px dashed var(--line);border-radius:9px;padding:6px 9px;background:#fff;color:var(--ink)}
+.amo-lp .sub-add input:focus{outline:none;border-style:solid;border-color:var(--ink)}
+.amo-lp .sub-add button,.amo-lp .k-add .go{font:inherit;font-size:13.5px;font-weight:600;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.amo-lp .notes{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:1.45}
+.amo-lp .notes li{padding-left:12px;border-left:3px solid var(--lilac)}
+.amo-lp .notes li.q{border-left-color:var(--amber)}
+.amo-lp .kt-cm{grid-column:1/-1;border-top:1.5px solid var(--line)}
+.amo-lp .kt-cm .cm-list{margin:0 0 10px}
+
+.amo-lp .k-add{border:1.5px dashed var(--ink);border-radius:14px;margin-top:6px}
+.amo-lp .k-add>button{font:inherit;font-size:15px;font-weight:600;color:var(--ink);background:none;border:0;padding:14px 18px;width:100%;text-align:left;cursor:pointer;border-radius:14px}
+.amo-lp .k-add>button:hover{background:var(--lilac-soft)}
+.amo-lp .k-add form{padding:16px 18px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;background:var(--lilac-soft);border-radius:0 0 13px 13px}
+.amo-lp .k-add form label{font-size:13px;font-weight:600;color:var(--ink2);display:flex;flex-direction:column;gap:4px}
+.amo-lp .k-add form .wide{grid-column:1/-1}
+.amo-lp .k-add textarea{font:inherit;font-size:14px;border:1.5px solid var(--line);border-radius:9px;padding:7px 9px;color:var(--ink);resize:vertical;background:#fff}
+.amo-lp .k-add .act{grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.amo-lp .k-add .err{font-size:13px;color:#8A2B12}
+
+@media (max-width:1080px){.amo-lp .k-body{grid-template-columns:1fr}.amo-lp .k-side{position:static;order:-1}}
+@media (max-width:800px){
+  .amo-lp .k-sum{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .amo-lp .k-tools{position:static}
+  .amo-lp .kt-row{grid-template-columns:28px minmax(0,1fr) 28px;row-gap:8px}
+  .amo-lp .kt-own,.amo-lp .kt-due,.amo-lp .kt-p{grid-column:2/3}
+  .amo-lp .kt-own{grid-row:2}.amo-lp .kt-due{grid-row:3}.amo-lp .kt-p{grid-row:4;justify-self:start;padding:3px 10px}
+  .amo-lp .kt-x{grid-column:3;grid-row:1}
+  .amo-lp .kt-d{grid-template-columns:1fr}
+  .amo-lp .kt-d>div+div{border-left:0;border-top:1.5px solid var(--line)}
+  .amo-lp .k-add form{grid-template-columns:1fr 1fr}
+  .amo-lp .k-body{padding:24px 16px 56px}
+}
 </style>
 
 <div class="amo-lp">
+  <nav class="tabs" aria-label="Вкладки"><div class="w" role="tablist">
+    <button type="button" class="tab" role="tab" id="amoTabBtn1" aria-controls="amoTab1" aria-selected="true" data-tab="1">Пожелания и решения</button>
+    <button type="button" class="tab" role="tab" id="amoTabBtn2" aria-controls="amoTab2" aria-selected="false" data-tab="2">План работ <small id="amoTabK">блок 1</small></button>
+  </div></nav>
+
+  <div id="amoTab1" role="tabpanel" aria-labelledby="amoTabBtn1">
   <header class="hero">
     <div class="w">
       <p class="k">Solar Staff · доработка amoCRM</p>
@@ -253,6 +375,26 @@
       <span class="g">Следующий шаг: техвстреча с Мариной по разделу 15</span>
     </div>
   </footer>
+  </div>
+
+  <div id="amoTab2" role="tabpanel" aria-labelledby="amoTabBtn2" hidden>
+    <header class="k-hero"><div class="w">
+      <p class="k">План работ · делаем блоками, по одному за раз</p>
+      <h1 id="kTitle"></h1>
+      <p class="lead" id="kLead"></p>
+      <div class="blocks" id="kBlocks"></div>
+      <div class="k-sum" id="kSum"></div>
+      <p class="sync" id="kSync"></p>
+    </div></header>
+    <div class="k-tools"><div class="w">
+      <div class="grp" id="kFOwner" role="toolbar" aria-label="Ответственный"><span class="t">Кто:</span></div>
+      <div class="grp" id="kFSt" role="toolbar" aria-label="Статус"><span class="t">Показать:</span></div>
+    </div></div>
+    <div class="w k-body">
+      <main id="kMain"></main>
+      <aside class="k-side" id="kSide"></aside>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -551,6 +693,7 @@ function paint(){
   paintComments();
   paintPlan();
   applyFilter();
+  if(window.amoK1)window.amoK1.render();
 }
 
 function short(ts){
@@ -611,6 +754,24 @@ function mergeTasks(){
 }
 function lsArr(){try{var v=JSON.parse(localStorage.getItem(LST)||"[]");return Array.isArray(v)?v:[]}catch(e){return []}}
 var pending=0;
+
+/* Мост для вкладки «План работ»: те же данные и тот же скрипт, без отдельного хранилища. */
+window.amoStore={
+  get:function(){return {state:state,comments:comments,deadlines:deadlines}},
+  local:!STATUS_URL,
+  note:note,
+  /* kind: status|deadline|comment; apply() — оптимистичное изменение, undo() — откат при ошибке */
+  send:function(payload,apply,undo,okMsg){
+    apply();lsSet();paint();
+    if(!STATUS_URL)return Promise.resolve(true);
+    pending++;note("Сохраняем…");
+    return fetch(STATUS_URL,{method:"POST",body:JSON.stringify(payload)})
+      .then(function(r){return r.json()})
+      .then(function(res){if(!res||!res.ok)throw 0;note(okMsg||"Сохранено");return true})
+      .catch(function(){undo();note("Не удалось сохранить. Попробуйте ещё раз.",true);return false})
+      .then(function(ok){pending--;lsSet();paint();return ok});
+  }
+};
 
 function load(){
   if(!STATUS_URL){state=lsGet();comments=lsGet(LSC);deadlines=lsGet(LSD);tasks=lsArr();paint();note("Отметки видны только в этом браузере. Чтобы видела вся команда, подключите таблицу (STATUS_URL).",true);return}
@@ -724,6 +885,344 @@ if(STATUS_URL){
   setInterval(function(){if(!document.hidden)load()},POLL_SECONDS*1000);
   document.addEventListener("visibilitychange",function(){if(!document.hidden)load()});
 }
+})();
+</script>
+<script>
+/* ===== Вкладка «План работ» =====
+   Данные блока — в K1 ниже. Статусы, дедлайны, отметки подзадач и комментарии
+   сохраняются в ту же Google-таблицу, что и первая вкладка (id начинаются с «k1-»).
+   Ответственный и приоритет, изменённые на сайте, хранятся как комментарии с id «__k1meta__»,
+   добавленные задачи — «__k1tasks__», добавленные подзадачи — «__k1subs__». */
+(function(){
+var OWNERS=["Марина","Наталья","Екатерина","Кирилл","КС","Маркетинг","—"];
+var PR={1:["Приоритет 1","Делаем сейчас"],2:["Приоритет 2","Следом, в рамках блока"],3:["Приоритет 3","Закрываем блок"],4:["Долгосрок","Зависит от разработки — блок не держит"],5:["Входящие","Предложенные задачи — разберём по блокам на встрече"]};
+var ST={todo:"Не начато",wip:"В работе",done:"Готово"};
+
+var K1={
+  title:"Блок 1. Карточка компании",
+  lead:"Договорились на встрече 19 ноября: берём один блок и делаем только его, пока не закроем. Здесь — задачи блока с ответственными, сроками и тем, что решили. Долгие задачи, которые зависят от разработки, не держат блок открытым — они в конце списка.",
+  blocks:["1 · Карточка компании","2 · Когда и какие данные заполняем","3 · SLA","4 · Предотток и причины отказа","5 · Скрипты и шаблоны","6 · Аналитика"],
+  rules:[
+    "Делаем один блок за раз, не скачем между задачами.",
+    "Сроки — ориентир, который назвали на встрече. Если сдвигается — меняем дату и пишем почему в комментарии.",
+    "Новые задачи не добавляем в текущий блок — предлагаем во «Входящие», раскидываем по блокам на встрече. Иначе блок не закончится.",
+    "Задачи, которые зависят от разработки, уходят в долгосрок и не держат блок.",
+    "Закрыли блок — созваниваемся и берём следующий."
+  ],
+  tasks:[
+    {id:"k1-1",pr:1,title:"Аудит полей",owner:"Марина",due:"2026-11-23",est:"2 дня",wait:"Кирилл — список полей админки и сроки",
+     subs:[
+      {id:"k1-1.1",t:"Список полей amo: прошлись и разметили, что убрать и что оставить",done:true},
+      {id:"k1-1.2",t:"Поля, обязательные для BI, учтены в общем файле",done:true},
+      {id:"k1-1.3",t:"Сходить к Кириллу: запросить список полей админки и узнать сроки исправлений — до 20 ноября включительно",who:"Марина"},
+      {id:"k1-1.4",t:"Внести изменения в amo по размеченному списку",who:"Марина"},
+      {id:"k1-1.5",t:"Уточнить у маркетинга, какие поля оставить",who:"Марина"},
+      {id:"k1-1.6",t:"Уточнить у КС, какие поля им нужны — у Суриковой",who:"Марина"},
+      {id:"k1-1.7",t:"Архивные воронки: перенести все сделки в предотток отдельным статусом — 19 ноября",who:"Марина"}
+     ],
+     notes:[
+      "Первый приоритет — это база для всего остального.",
+      "Поддержку фрилансеров не спрашиваем: их данные в amo не нужны, а лишние фрилансеры в базе увеличат стоимость лицензии. Если им что-то понадобится — выгрузим разово.",
+      "Архивные воронки (до 2025 года) не удаляем: по старой базе дешевле пройтись, чем привлекать новых. Сначала всё в предотток, разбираем уже в блоке «Предотток».",
+      "Исправление полей в админке — отдельная задача на Кирилла в долгосроке."
+     ]},
+    {id:"k1-2",pr:1,title:"Поле «Сфера»: пункт «Другое» с текстом",owner:"Марина",due:"2026-11-20",est:"1 день",
+     subs:[
+      {id:"k1-2.1",t:"Добавить текстовое поле «Сфера — другое»",who:"Марина"},
+      {id:"k1-2.2",t:"В формах процесса Sensei: если выбрано «Другое» — поле с текстом обязательно",who:"Марина"},
+      {id:"k1-2.3",t:"Сказать менеджерам: после квалификации вписывать, что за сфера, если выбрано «Другое»",who:"Наталья, Екатерина"}
+     ],
+     notes:[
+      "Зачем: увидеть, какие сферы мы не охватываем и из каких ниш к нам приходят.",
+      "Раз в квартал смотрим, что пишут в «Другое», и добавляем частые сферы в список.",
+      "Сверить список сфер с админкой и BI — вместе с вопросом к Кириллу по аудиту полей."
+     ]},
+    {id:"k1-3",pr:1,title:"Комиссия сервиса: поле-список + нестандартная ставка",owner:"Марина",due:"2026-11-23",est:"2 дня",
+     subs:[
+      {id:"k1-3.1",t:"Поле-список со стандартными ставками",who:"Марина"},
+      {id:"k1-3.2",t:"Отдельное поле для нестандартной ставки (например, 3,6 / 3,8)",who:"Марина"},
+      {id:"k1-3.3",t:"Сделать комиссию обязательной перед передачей в КС и на этапе «Активация»",who:"Марина"},
+      {id:"k1-3.4",t:"Обсудить с КС, что им нужно видеть по комиссии",who:"Екатерина"}
+     ],
+     notes:[
+      "Решили: список, а не текст — так удобнее для аналитики. Нестандартные ставки редкие, но бывают.",
+      "После трёх месяцев комиссию при росте оборота пересматривает КС, не продажи.",
+      "?Что отвечаем клиенту, почему тарифы не фиксируем в договоре — прописать формулировку."
+     ]},
+    {id:"k1-4",pr:2,title:"Источник заявки: объединить автоматический и ручной",owner:"Марина",due:"2026-11-26",est:"4–5 дней",wait:"Кирилл — сопоставить с источниками в админке",
+     subs:[
+      {id:"k1-4.1",t:"Объединить автоматический и ручной источник в одно поле",who:"Марина"},
+      {id:"k1-4.2",t:"Правило: если источник уже стоит — не перезаписываем; если пусто — менеджер спрашивает у клиента",who:"Марина"},
+      {id:"k1-4.3",t:"Почистить значения: «Бывший фрилансер» → «Фрилансер»",who:"Марина"},
+      {id:"k1-4.4",t:"Сопоставить список источников с админкой, уточнить у Кирилла",who:"Марина"}
+     ],
+     notes:[
+      "«Соцсети и мессенджеры» ставятся автоматически по UTM.",
+      "«Конкурент» решили можно оставить: редко, но бывает (рынок один, продукты разные).",
+      "Мультиканальная аналитика с несколькими источниками — в долгосроке, самый поздний приоритет."
+     ]},
+    {id:"k1-5",pr:2,title:"Налоговые статусы исполнителей: добавить «не РФ»",owner:"Марина",due:"2026-11-27",est:"5–7 дней",
+     subs:[
+      {id:"k1-5.1",t:"Добавить значение «не РФ» в налоговые статусы (в сделке)",who:"Марина"}
+     ],
+     notes:["В документе отмечено «не сделано» — проверить и закрыть."]},
+    {id:"k1-6",pr:2,title:"Ключевые поля наверх карточки",owner:"Наталья",due:"2026-11-27",
+     subs:[
+      {id:"k1-6.1",t:"Прописать, какие поля важнее — отдельно по сделке, контакту и компании",who:"Наталья, Екатерина"},
+      {id:"k1-6.2",t:"Поднять эти поля наверх внутри сделки, контакта и компании",who:"Марина"},
+      {id:"k1-6.3",t:"Редкие группы полей свернуть — например, всё об исполнителях в одну раскрывающуюся строку",who:"Марина"}
+     ],
+     notes:[
+      "Основная вкладка сделки общая для всех воронок — туда поля продаж не кладём.",
+      "Поля компании нельзя поднять выше полей сделки: порядок всегда сделка → контакт → компания. Двигать можно только внутри каждой.",
+      "Решили использовать свёрнутые группы: ненужное скрыто, важное поднимается и заполняется в одном окне."
+     ]},
+    {id:"k1-7",pr:3,title:"Предполагаемая дата старта",owner:"Наталья",
+     subs:[
+      {id:"k1-7.1",t:"Договориться, что считаем датой старта — по сути «дата первой выручки»",who:"Наталья, Екатерина"},
+      {id:"k1-7.2",t:"Прописать регламент для менеджеров: когда и как заполнять",who:"Наталья, Екатерина"}
+     ],
+     notes:["Перенесли сюда из отдельного блока: это поле карточки."]},
+    {id:"k1-8",pr:4,title:"Исправить поля в админке под наши",owner:"Кирилл",due:"2026-12-31",est:"до конца декабря",wait:"разработка",
+     subs:[
+      {id:"k1-8.1",t:"Передать Кириллу размеченный список: что исправить в админке",who:"Марина"},
+      {id:"k1-8.2",t:"Сверить сферы, источники и сегменты в админке и BI",who:"Кирилл"}
+     ],
+     notes:["Сейчас при отправке на активацию сфера улетает в админку, а там такой нет — в админке свой длинный старый список.","Раньше договаривались, что поможет закреплённый разработчик, но не сложилось — идём к Кириллу напрямую."]},
+    {id:"k1-9",pr:4,title:"Данные об исполнителях подтягиваются из бэка",owner:"Кирилл",due:"2027-01-31",est:"январь",wait:"разработка",
+     subs:[
+      {id:"k1-9.1",t:"Положить Кириллу в бэклог на январь",who:"Марина"}
+     ],
+     notes:["Количество фрилансеров, их задачи и налоговые статусы должны обновляться сами: клиент начинает с одного исполнителя, а к передаче в аккаунтинг их уже шесть.","Не приоритет."]},
+    {id:"k1-10",pr:4,title:"Мультиканальная аналитика источников",owner:"Марина",est:"бэклог",
+     subs:[],
+     notes:["Несколько источников у одной заявки. Долго — самый поздний приоритет."]}
+  ]
+};
+
+
+var $=function(id){return document.getElementById(id)};
+var main=$("kMain"),side=$("kSide");
+var fOwner="all",fSt="open",openIds={};
+try{openIds=JSON.parse(localStorage.getItem("amo-k1-open")||"{}")}catch(e){}
+function saveOpen(){try{localStorage.setItem("amo-k1-open",JSON.stringify(openIds))}catch(e){}}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+var MON=["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+function today(){var n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
+function parseD(d){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d||"");return m?new Date(+m[1],m[2]-1,+m[3]):null}
+function dayLbl(dt){return dt.getDate()+" "+MON[dt.getMonth()]}
+function plural(n,a,b,c){var x=n%10,y=n%100;return x===1&&y!==11?a:(x>=2&&x<=4&&(y<12||y>14)?b:c)}
+function short(ts){var d=new Date(ts);if(isNaN(d))return "";function p(n){return(n<10?"0":"")+n}return p(d.getDate())+"."+p(d.getMonth()+1)+" в "+p(d.getHours())+":"+p(d.getMinutes())}
+function parseCh(list){var out=[];(list||[]).forEach(function(m){try{var o=JSON.parse(m.x);if(o&&o.id)out.push(Object.assign(o,{_a:m.a,_ts:m.ts}))}catch(e){}});return out}
+
+/* собрать актуальную модель: данные + правки с сайта */
+function model(){
+  var st=window.amoStore.get();
+  var meta={};parseCh(st.comments.__k1meta__).sort(function(a,b){return new Date(a._ts)-new Date(b._ts)}).forEach(function(m){meta[m.id]=Object.assign(meta[m.id]||{},m)});
+  var extraT=parseCh(st.comments.__k1tasks__),extraS=parseCh(st.comments.__k1subs__);
+  var tasks=K1.tasks.concat(extraT.map(function(t){return {id:t.id,pr:+t.pr||2,title:t.title,owner:t.owner,due:t.due,est:t.est,subs:(t.subs||[]).map(function(x,i){return {id:t.id+"."+(i+1),t:x}}),notes:t.blk?["Предложено для блока: "+t.blk]:[],user:t._a,uts:t._ts}}));
+  return tasks.map(function(t){
+    var m=meta[t.id]||{};
+    var subs=(t.subs||[]).concat(extraS.filter(function(x){return x.parent===t.id}).map(function(x){return {id:x.id,t:x.t,user:x._a}}));
+    subs=subs.map(function(x){var v=st.state[x.id];return Object.assign({},x,{done:v?v.s==="done":!!x.done})});
+    var sv=st.state[t.id],s=sv&&ST[sv.s]?sv.s:(t.s||"todo");
+    var dv=st.deadlines[t.id],due=dv?(dv.d||""):(t.due||"");
+    return Object.assign({},t,{owner:m.owner||t.owner||"—",pr:+(m.pr||t.pr)||2,s:s,due:due,subs:subs,cm:(st.comments[t.id]||[])});
+  });
+}
+function dl(t){
+  var dt=parseD(t.due);if(!dt)return {k:"",t:t.est?"срок: "+t.est:"без срока"};
+  var d=Math.round((dt-today())/864e5);
+  if(t.s==="done")return {k:"",t:"срок был "+dayLbl(dt)};
+  if(d<0)return {k:"late",t:"просрочено на "+(-d)+" "+plural(-d,"день","дня","дней")};
+  if(d===0)return {k:"soon",t:"срок сегодня"};
+  if(d<=2)return {k:"soon",t:"осталось "+d+" "+plural(d,"день","дня","дней")+(t.est?" · работы: "+t.est:"")};
+  return {k:"",t:"осталось "+d+" "+plural(d,"день","дня","дней")+(t.est?" · работы: "+t.est:"")};
+}
+
+function taskHTML(t){
+  var d=dl(t),nd=t.subs.filter(function(x){return x.done}).length,open=!!openIds[t.id];
+  var own='<select class="kt-own-s" aria-label="Ответственный">'+OWNERS.map(function(o){return '<option'+(o===t.owner?' selected':'')+'>'+o+'</option>'}).join("")+(OWNERS.indexOf(t.owner)<0?'<option selected>'+esc(t.owner)+'</option>':'')+'</select>';
+  var meta=[];if(t.wait&&t.s!=="done")meta.push('<span class="wait">Ждём: '+esc(t.wait)+'</span>');if(t.user)meta.push("добавил(а) "+esc(t.user));if(t.cm.length)meta.push(t.cm.length+" "+plural(t.cm.length,"комментарий","комментария","комментариев"));
+  var h='<article class="kt'+(open?' open':'')+'" data-id="'+t.id+'" data-s="'+t.s+'" data-dl="'+d.k+'" data-owner="'+esc(t.owner)+'">'+
+   '<div class="kt-row">'+
+    '<button type="button" class="kt-st" title="'+ST[t.s]+' — нажмите, чтобы сменить" aria-label="Статус: '+ST[t.s]+'. Сменить"></button>'+
+    '<div class="kt-t" role="button" tabindex="0" aria-expanded="'+open+'"><b>'+esc(t.title)+'</b><small>'+ST[t.s]+(meta.length?' · '+meta.join(" · "):"")+'</small></div>'+
+    '<div class="kt-own">'+own+'</div>'+
+    '<div class="kt-due"><input type="date" value="'+esc(t.due)+'" aria-label="Дедлайн"><em>'+esc(d.t)+'</em></div>'+
+    '<div class="kt-p'+(t.subs.length&&nd===t.subs.length?' full':'')+'" title="Подзадачи">'+(t.subs.length?nd+"/"+t.subs.length:"—")+'</div>'+
+    '<button type="button" class="kt-x" aria-label="Подробнее" aria-expanded="'+open+'"></button>'+
+   '</div>';
+  if(open){
+    h+='<div class="kt-d"><div><h4>Что сделать</h4><ul class="subs">'+
+      t.subs.map(function(x){return '<li class="'+(x.done?"done":"")+'"><label><input type="checkbox" data-sub="'+x.id+'"'+(x.done?" checked":"")+'><span>'+esc(x.t)+(x.who?' <small>· '+esc(x.who)+'</small>':'')+'</span></label></li>'}).join("")+
+      '</ul><div class="sub-add"><input type="text" maxlength="300" placeholder="Добавить подзадачу" aria-label="Новая подзадача"><button type="button">Добавить</button></div></div>'+
+      '<div><h4>Решили и уточняем</h4>'+('<label style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink2);margin-bottom:10px">Перенести в группу <select class="kt-pr-s" style="width:auto">'+[1,2,3,4,5].map(function(p){return '<option value="'+p+'"'+(p===t.pr?' selected':'')+'>'+PR[p][0]+'</option>'}).join("")+'</select></label>')+(t.notes&&t.notes.length?'<ul class="notes">'+t.notes.map(function(n){var q=/^\?/.test(n);return '<li'+(q?' class="q"':'')+'>'+esc(q?n.slice(1).trim():n)+'</li>'}).join("")+'</ul>':'<p style="font-size:14px;color:var(--ink2)">Пока ничего — напишите в комментариях.</p>')+'</div>'+
+      '<div class="kt-cm cm"><button type="button" class="cm-t" aria-expanded="true" disabled style="cursor:default">Комментарии <span class="'+(t.cm.length?"has":"")+'">'+t.cm.length+'</span></button><div class="cm-b"><div class="cm-list">'+
+      (t.cm.length?t.cm.slice().sort(function(a,b){return new Date(a.ts)-new Date(b.ts)}).map(function(m){return '<div class="cm-item'+(m.local?' local':'')+'"><div class="who"><b>'+esc(m.a||"Без имени")+'</b> · '+short(m.ts)+'</div><div class="tx">'+esc(m.x)+'</div></div>'}).join(""):'<p class="cm-empty">Комментариев пока нет.</p>')+
+      '</div><div class="cm-form"><textarea rows="2" maxlength="2000" placeholder="Напишите комментарий" aria-label="Комментарий"></textarea><div class="cm-act"><input class="cm-name k-name" maxlength="60" placeholder="Ваше имя" aria-label="Ваше имя"><button type="button" class="cm-send k-send">Добавить комментарий</button></div><p class="cm-err" role="status"></p></div></div></div>'+
+      '</div>';
+  }
+  return h+'</article>';
+}
+
+function render(){
+  if(!window.amoStore)return;
+  var ts=model(),t0=today();
+  /* шапка */
+  $("kTitle").textContent=K1.title;$("kLead").textContent=K1.lead;
+  $("kBlocks").innerHTML='<span class="t">Блоки:</span>'+K1.blocks.map(function(b,i){return '<span class="blk '+(i===0?"on":"next")+'">'+esc(b)+'</span>'}).join("");
+  var subT=0,subD=0;ts.forEach(function(t){subT+=t.subs.length;subD+=t.subs.filter(function(x){return x.done}).length});
+  var act=ts.filter(function(t){return t.pr<4}),doneT=act.filter(function(t){return t.s==="done"}).length;
+  var late=act.filter(function(t){return dl(t).k==="late"}).length;
+  var last=act.map(function(t){return parseD(t.due)}).filter(Boolean).sort(function(a,b){return b-a})[0];
+  var wk=new Date(t0);wk.setDate(t0.getDate()+7);
+  var week=act.filter(function(t){var d=parseD(t.due);return t.s!=="done"&&d&&d>=t0&&d<=wk}).length;
+  $("kSum").innerHTML=
+    '<div class="k-card"><b>'+doneT+' из '+act.length+'</b><span>задач блока готово</span><div class="k-bar"><i style="width:'+(act.length?doneT/act.length*100:0)+'%"></i></div></div>'+
+    '<div class="k-card"><b>'+subD+' из '+subT+'</b><span>подзадач отмечено</span><div class="k-bar"><i style="width:'+(subT?subD/subT*100:0)+'%"></i></div></div>'+
+    '<div class="k-card"><b>'+week+'</b><span>'+plural(week,"задача","задачи","задач")+' со сроком в ближайшие 7 дней</span></div>'+
+    '<div class="k-card'+(late?" warn":"")+'"><b>'+(late?late:(last?dayLbl(last):"—"))+'</b><span>'+(late?plural(late,"задача просрочена","задачи просрочены","задач просрочено"):"последний срок в блоке")+'</span></div>';
+  $("amoTabK").textContent=doneT+"/"+act.length;
+  /* фильтры */
+  /* список */
+  /* человек печатает или выбирает — список не перерисовываем, чтобы не сбить ввод */
+  var f=document.activeElement;
+  if(f&&main.contains(f)&&/^(INPUT|TEXTAREA|SELECT)$/.test(f.tagName)){paintSide(ts);return}
+  var html="";
+  [1,2,3,4,5].forEach(function(p){
+    var g=ts.filter(function(t){return t.pr===p}).sort(function(a,b){var x=parseD(a.due),y=parseD(b.due);return (x?x:9e15)-(y?y:9e15)});
+    if(!g.length)return;
+    html+='<section class="k-grp" data-pr="'+p+'"><h2><span class="pr pr'+p+'">'+PR[p][0]+'</span>'+PR[p][1]+'</h2>'+(p===4?'<p>Не входит в прогресс блока: блок закрываем без них.</p>':p===5?'<p>Сюда попадают задачи, предложенные с сайта. В прогресс блока не входят.</p>':'')+g.map(taskHTML).join("")+'</section>';
+  });
+  html+='<div class="k-add" id="kAdd"><button type="button">+ Предложить новую задачу</button><form hidden>'+
+    '<label class="wide">Задача<input name="title" maxlength="200" required></label>'+
+    '<label>Ответственный<select name="owner">'+OWNERS.map(function(o){return '<option>'+o+'</option>'}).join("")+'</select></label>'+
+    '<input type="hidden" name="pr" value="5">'+
+    '<label>Желаемый срок<input type="date" name="due"></label>'+
+    '<label>Оценка<input name="est" maxlength="30" placeholder="например, 2 дня"></label>'+
+    '<label>Из какого блока<select name="blk"><option value="">Не знаю</option>'+K1.blocks.map(function(b){return '<option>'+esc(b)+'</option>'}).join("")+'</select></label>'+
+    '<label class="wide">Подзадачи — каждая с новой строки<textarea name="subs" rows="3" maxlength="900"></textarea></label>'+
+    '<div class="act"><input name="a" class="cm-name k-name" maxlength="60" placeholder="Ваше имя" aria-label="Ваше имя" style="flex:1 1 180px;width:auto"><button type="submit" class="go">Добавить задачу</button><button type="button" class="add-cancel">Отмена</button><span class="err" role="status"></span></div></form></div>';
+  main.innerHTML=html;
+  var nm="";try{nm=localStorage.getItem("amo-lp-name")||""}catch(e){}
+  if(nm)main.querySelectorAll(".k-name").forEach(function(i){i.value=nm});
+  applyF();paintSide(ts);
+}
+function applyF(){
+  main.querySelectorAll(".kt").forEach(function(a){
+    var ok=(fOwner==="all"||a.dataset.owner===fOwner)&&(fSt==="all"||(fSt==="open"?a.dataset.s!=="done":fSt==="late"?a.dataset.dl==="late":a.dataset.s===fSt));
+    a.classList.toggle("hide",!ok);
+  });
+  main.querySelectorAll(".k-grp").forEach(function(g){g.style.display=g.querySelector(".kt:not(.hide)")?"":"none"});
+}
+function paintSide(ts){
+  var t0=today(),act=ts.filter(function(t){return t.s!=="done"&&t.pr<4});
+  var near=act.filter(function(t){return parseD(t.due)}).sort(function(a,b){return parseD(a.due)-parseD(b.due)}).slice(0,6);
+  var wait=act.filter(function(t){return t.wait});
+  var go=function(t,sub){return '<li><button type="button" data-go="'+t.id+'">'+esc(t.title)+'</button><small>'+sub+'</small></li>'};
+  side.innerHTML=
+    '<div class="k-box"><h3>Ближайшие сроки</h3>'+(near.length?'<ul>'+near.map(function(t){var d=parseD(t.due),x=dl(t);return go(t,dayLbl(d)+" · "+esc(t.owner)+(x.k==="late"?" · <b style=\'color:#8A1C14\'>"+x.t+"</b>":""))}).join("")+'</ul>':'<p>Сроков пока нет — поставьте дату у задачи.</p>')+'</div>'+
+    (wait.length?'<div class="k-box"><h3>Ждём от других</h3><ul>'+wait.map(function(t){return go(t,"ждём: "+esc(t.wait))}).join("")+'</ul></div>':'')+
+    '<div class="k-box rules"><h3>Как работаем</h3><ul>'+K1.rules.map(function(r){return '<li>'+esc(r)+'</li>'}).join("")+'</ul></div>';
+}
+
+function chips(box,opts,get,set){
+  box=$(box);Object.keys(opts).forEach(function(k){
+    var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=opts[k];b.dataset.k=k;
+    b.setAttribute("aria-pressed",get()===k?"true":"false");
+    b.addEventListener("click",function(){set(k);box.querySelectorAll(".chip").forEach(function(c){c.setAttribute("aria-pressed",c.dataset.k===k?"true":"false")});applyF()});
+    box.appendChild(b);
+  });
+}
+var oo={all:"Все"};["Марина","Наталья","Екатерина","Кирилл"].forEach(function(o){oo[o]=o});
+chips("kFOwner",oo,function(){return fOwner},function(k){fOwner=k});
+chips("kFSt",{open:"Не готовые",all:"Все",wip:"В работе",late:"Просроченные",done:"Готовые"},function(){return fSt},function(k){fSt=k});
+
+/* ---------- действия ---------- */
+var S=function(){return window.amoStore.get()};
+function title(id){var t=model().filter(function(x){return x.id===id})[0];return t?"План · "+t.title.slice(0,150):"План"}
+function name(scope){var i=scope.querySelector(".k-name");var v=i?i.value.trim():"";if(v)try{localStorage.setItem("amo-lp-name",v)}catch(e){};return v}
+function setStatus(id,s){
+  var st=S().state,prev=st[id];
+  window.amoStore.send({id:id,s:s,title:title(id)},function(){st[id]={s:s,ts:new Date().toISOString()}},function(){if(prev)st[id]=prev;else delete st[id]});
+}
+function metaPost(id,patch,who){
+  var c=S().comments,msg={a:who||"сайт",x:JSON.stringify(Object.assign({id:id},patch)),ts:new Date().toISOString()};
+  window.amoStore.send({type:"comment",id:"__k1meta__",a:msg.a,x:msg.x,title:title(id)+" — изменено"},
+    function(){(c.__k1meta__=c.__k1meta__||[]).push(msg)},function(){c.__k1meta__.splice(c.__k1meta__.indexOf(msg),1)});
+}
+main.addEventListener("click",function(e){
+  var el=e.target,kt=el.closest(".kt"),id=kt&&kt.dataset.id;
+  if(el.closest(".kt-st")){var s=kt.dataset.s,n=s==="todo"?"wip":s==="wip"?"done":"todo";setStatus(id,n);return}
+  if(el.closest(".kt-x")||el.closest(".kt-t")){if(openIds[id])delete openIds[id];else openIds[id]=1;saveOpen();render();return}
+  if(el.closest(".sub-add button")){
+    var inp=kt.querySelector(".sub-add input"),v=inp.value.trim();if(!v){inp.focus();return}
+    var c=S().comments,o={id:id+".u"+Date.now().toString(36),parent:id,t:v},msg={a:"сайт",x:JSON.stringify(o),ts:new Date().toISOString()};
+    inp.value="";document.activeElement.blur();
+    window.amoStore.send({type:"comment",id:"__k1subs__",a:"сайт",x:msg.x,title:title(id)+" — подзадача"},function(){(c.__k1subs__=c.__k1subs__||[]).push(msg)},function(){c.__k1subs__.splice(c.__k1subs__.indexOf(msg),1)},"Подзадача добавлена");
+    return;
+  }
+  if(el.closest(".k-send")){
+    var ta=kt.querySelector(".cm-form textarea"),err=kt.querySelector(".cm-err"),x=ta.value.trim(),a=name(kt);
+    if(!x){err.textContent="Напишите текст комментария.";ta.focus();return}
+    if(!a){err.textContent="Укажите имя.";kt.querySelector(".k-name").focus();return}
+    var cm=S().comments,m={a:a,x:x,ts:new Date().toISOString(),local:true};ta.value="";document.activeElement.blur();
+    window.amoStore.send({type:"comment",id:id,a:a,x:x,title:title(id)},function(){(cm[id]=cm[id]||[]).push(m)},function(){cm[id].splice(cm[id].indexOf(m),1);ta.value=x},"Комментарий сохранён").then(function(){delete m.local;render()});
+    return;
+  }
+  var add=el.closest("#kAdd");
+  if(add&&el.matches("#kAdd>button")){add.querySelector("form").hidden=false;el.hidden=true;add.querySelector("input[name=title]").focus();return}
+  if(add&&el.closest(".add-cancel")){add.querySelector("form").hidden=true;add.querySelector(":scope>button").hidden=false;return}
+});
+main.addEventListener("keydown",function(e){
+  if(e.target.closest(".kt-t")&&(e.key==="Enter"||e.key===" ")){e.preventDefault();e.target.click()}
+  if(e.target.closest(".sub-add input")&&e.key==="Enter"){e.preventDefault();e.target.nextElementSibling.click()}
+});
+main.addEventListener("change",function(e){
+  var el=e.target,kt=el.closest(".kt");if(!kt)return;var id=kt.dataset.id;
+  if(el.dataset.sub){setStatus(el.dataset.sub,el.checked?"done":"todo");return}
+  if(el.type==="date"){
+    var dd=S().deadlines,prev=dd[id],v=el.value;el.blur();
+    window.amoStore.send({type:"deadline",id:id,d:v,title:title(id)},function(){dd[id]={d:v,ts:new Date().toISOString()}},function(){if(prev)dd[id]=prev;else delete dd[id]},"Дедлайн сохранён");return;
+  }
+  if(el.classList.contains("kt-own-s")){var v2=el.value;el.blur();metaPost(id,{owner:v2});return}
+  if(el.classList.contains("kt-pr-s")){var v3=el.value;el.blur();metaPost(id,{pr:+v3});return}
+});
+main.addEventListener("submit",function(e){
+  e.preventDefault();var f=e.target,err=f.querySelector(".err");
+  var t=f.title.value.trim(),a=name(f);
+  if(!t){err.textContent="Напишите, что за задача.";f.title.focus();return}
+  if(!a){err.textContent="Укажите имя.";f.a.focus();return}
+  var o={id:"k1-u"+Date.now().toString(36),title:t,owner:f.owner.value,pr:+f.pr.value,due:f.due.value,est:f.est.value.trim(),blk:f.blk.value,subs:f.subs.value.split("\n").map(function(x){return x.trim()}).filter(Boolean)};
+  var c=S().comments,msg={a:a,x:JSON.stringify(o),ts:new Date().toISOString()};
+  if(document.activeElement)document.activeElement.blur();
+  window.amoStore.send({type:"comment",id:"__k1tasks__",a:a,x:msg.x,title:"План · новая задача: "+t.slice(0,120)},function(){(c.__k1tasks__=c.__k1tasks__||[]).push(msg)},function(){c.__k1tasks__.splice(c.__k1tasks__.indexOf(msg),1)},"Задача добавлена");
+});
+side.addEventListener("click",function(e){
+  var g=e.target.closest("[data-go]");if(!g)return;
+  openIds[g.dataset.go]=1;saveOpen();fSt="all";fOwner="all";
+  document.querySelectorAll("#kFSt .chip,#kFOwner .chip").forEach(function(c){c.setAttribute("aria-pressed",c.dataset.k==="all"?"true":"false")});
+  render();var a=main.querySelector('.kt[data-id="'+g.dataset.go+'"]');
+  if(a){a.scrollIntoView({behavior:"smooth",block:"center"});a.classList.remove("flash");void a.offsetWidth;a.classList.add("flash")}
+});
+/* синхронизация в шапке — та же надпись, что на первой вкладке */
+var sy=$("amoSync");if(sy&&window.MutationObserver)new MutationObserver(function(){$("kSync").textContent=sy.textContent;$("kSync").className=sy.className}).observe(sy,{childList:true,characterData:true,subtree:true,attributes:true});
+
+/* ---------- вкладки ---------- */
+function showTab(n,push){
+  [1,2].forEach(function(i){$("amoTab"+i).hidden=i!==n;$("amoTabBtn"+i).setAttribute("aria-selected",i===n?"true":"false");$("amoTabBtn"+i).tabIndex=i===n?0:-1});
+  try{localStorage.setItem("amo-tab",n)}catch(e){}
+  if(push)history.replaceState(null,"",n===2?"#plan":location.pathname+location.search);
+  if(n===2)render();
+}
+document.querySelector(".amo-lp .tabs").addEventListener("click",function(e){var b=e.target.closest(".tab");if(b){showTab(+b.dataset.tab,true);window.scrollTo(0,0)}});
+document.querySelector(".amo-lp .tabs").addEventListener("keydown",function(e){if(e.key==="ArrowRight"||e.key==="ArrowLeft"){var n=document.activeElement.dataset.tab==="1"?2:1;showTab(n,true);$("amoTabBtn"+n).focus()}});
+window.amoK1={render:function(){if(!$("amoTab2").hidden)render();else{var ts=model(),a=ts.filter(function(t){return t.pr<4});$("amoTabK").textContent=a.filter(function(t){return t.s==="done"}).length+"/"+a.length}}};
+var h=location.hash,saved="1";try{saved=localStorage.getItem("amo-tab")||"1"}catch(e){}
+showTab(h==="#plan"?2:(/^#amo-s/.test(h)?1:+saved),false);
+window.addEventListener("hashchange",function(){if(location.hash==="#plan")showTab(2,false);else if(/^#amo-s/.test(location.hash))showTab(1,false)});
+window.amoK1.render();
 })();
 </script>
 
